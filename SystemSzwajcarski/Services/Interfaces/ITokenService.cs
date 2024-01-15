@@ -10,5 +10,6 @@ namespace SystemSzwajcarski.Services.Interfaces
     {
         string BuildToken(string key, string issuer, User user);
         bool ValidateToken(string key, string issuer, string token);
+        string RoleTotken(string token);
     }
 }
