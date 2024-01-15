@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,32 @@ namespace SystemSzwajcarski.Controllers
             {
                 return View(user);
             }
-            return RedirectToAction("Index", "Home"); ;
+            return RedirectToAction("Index", "Home"); 
+        }
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        public IActionResult Login(UserLogin user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(user);
+            }
+            string token = _accountS.Login(user);
+            if (token != "")
+            {
+                HttpContext.Session.SetString("Token", token);
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                return View(user);
+            }
+            
         }
     }
 }

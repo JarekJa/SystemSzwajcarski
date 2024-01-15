@@ -6,9 +6,9 @@ using SystemSzwajcarski.Models;
 
 namespace SystemSzwajcarski.Services.Interfaces
 {
-    public interface IAccountServices
+     public interface ITokenService
     {
-        bool Register(User user);
-        string Login(UserLogin user);
+        string BuildToken(string key, string issuer, User user);
+        bool ValidateToken(string key, string issuer, string token);
     }
 }
