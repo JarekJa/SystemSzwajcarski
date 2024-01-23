@@ -44,7 +44,7 @@ namespace SystemSzwajcarski.Services
             return "";
         }
 
-        public bool Register(User user)
+        public bool Register(UserRegister user)
         {
             if (user.Organizer)
             { 

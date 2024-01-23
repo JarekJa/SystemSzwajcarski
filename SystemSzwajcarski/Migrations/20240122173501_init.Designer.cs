@@ -9,7 +9,7 @@ using SystemSzwajcarski;
 namespace SystemSzwajcarski.Migrations
 {
     [DbContext(typeof(DbContextSS))]
-    [Migration("20240102141046_init")]
+    [Migration("20240122173501_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,29 +28,22 @@ namespace SystemSzwajcarski.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Login")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Organizer")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Player")
-                        .HasColumnType("bit");
+                    b.Property<int>("Roleuser")
+                        .HasColumnType("int");
 
                     b.HasKey("idUser");
 
@@ -65,29 +58,22 @@ namespace SystemSzwajcarski.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Login")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Organizer")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Player")
-                        .HasColumnType("bit");
+                    b.Property<int>("Roleuser")
+                        .HasColumnType("int");
 
                     b.HasKey("idUser");
 

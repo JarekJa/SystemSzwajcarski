@@ -13,7 +13,7 @@
 <body>
     <header>
         <div>
-            <nav  class="baner">
+            <nav class="baner">
                 <a class="home" asp-area="" asp-controller="Home" asp-action="Index">System Szwajcarski</a>
 
                 <div class="menu">
@@ -22,20 +22,14 @@
                             <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li>
-                            <a asp-area="" asp-controller="Home" asp-action="Test">Test</a>
-                        </li>
-                        <li>
-                            <div onload="changelayout()" class="dropdown">
-                                <a id="Log" asp-area="" asp-controller="Account" asp-action="Login">Logowanie</a>
+                            <div class="dropdown">
+                                <a  asp-area="" asp-controller="Account" asp-action="Account">Moje konto</a>
                                 <ul>
                                     <li>
-                                        <a id="Reg" asp-area="" asp-controller="Account" asp-action="Register">Rejstracja</a>
+                                        <a asp-area="" asp-controller="Account" asp-action="Account">Moje konto</a>
                                     </li>
                                     <li>
-                                        <a id="Log" asp-area="" asp-controller="Account" asp-action="Login">Logowanie</a>
-                                    </li>
-                                    <li>
-                                        <a asp-area="" asp-controller="Account" asp-action="Logout">Wyloguj się</a>
+                                        <a asp-area="" asp-controller="Account" asp-action="Logout">Wyloguj</a>
                                     </li>
                                 </ul>
                             </div>
@@ -43,9 +37,9 @@
                     </ul>
                 </div>
             </nav>
-            </div>
-</header>
-    
+        </div>
+    </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -69,3 +63,4 @@
 
 
 </html>
+

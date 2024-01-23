@@ -8,7 +8,7 @@ namespace SystemSzwajcarski.Services.Interfaces
 {
     public interface IAccountServices
     {
-        bool Register(User user);
+        bool Register(UserRegister user);
         string Login(UserLogin user);
     }
 }

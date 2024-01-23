@@ -11,7 +11,7 @@ namespace SystemSzwajcarski.Models
         {
 
         }
-        public Player(User user, string password) : base(user, password)
+        public Player(UserRegister user, string password) : base(user, password)
         {
 
         }

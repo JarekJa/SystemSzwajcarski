@@ -11,7 +11,7 @@ namespace SystemSzwajcarski.Models
         {
 
         }
-        public Organizer(User user, string password) : base( user,  password)
+        public Organizer(UserRegister user, string password) : base( user,  password)
         {
                 
         }

@@ -44,9 +44,10 @@ namespace SystemSzwajcarski.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            if(_tokenService.RoleTotken(token)!= "Organizer")
+            if(_tokenService.RoleTotken(token) != "Organizer")
             {
                 return RedirectToAction("Index", "Home");
+
             }
             return View();
         }

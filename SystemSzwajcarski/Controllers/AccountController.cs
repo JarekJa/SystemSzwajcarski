@@ -23,7 +23,7 @@ namespace SystemSzwajcarski.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Register(User user)
+        public IActionResult Register(UserRegister user)
         {
             if (!ModelState.IsValid || !(user.Player ^ user.Organizer))
             {
@@ -60,6 +60,15 @@ namespace SystemSzwajcarski.Controllers
                 return View(user);
             }
             
+        }
+        public IActionResult Logout() 
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+        }
+        public IActionResult Action()
+        {
+            return View();
         }
     }
 }

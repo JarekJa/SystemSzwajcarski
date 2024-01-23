@@ -8,38 +8,39 @@ namespace SystemSzwajcarski.Models
 {
     public class User
     {
+        public enum Role
+        {
+            Player,
+            Organizer
+        }
         [Key]
         public int idUser { get; set; }
-        [Required]
         public string Login { get; set; }
-        [Required]
         public string Name { get; set; }
-
-        public bool Organizer  { get; set ; }
-        public bool Player { get; set; }
-
-        [Required]
         public string LastName { get; set; }
-        [EmailAddress]
-        [Required]
         public string Email { get; set; }
-        [Required]
         public string Password { get; set; }
+        public Role Roleuser { get; set; }
 
         public User()
         {
-            Organizer = false;
-            Player = false;
+
         }
-        public User(User user,string password)
+        public User(UserRegister user,string password)
         {
             Name = user.Name;
             LastName = user.LastName;
             Login = user.Login;
             Email = user.Email;
             Password = password;
-            Organizer = user.Organizer;
-            Player = user.Player;
+            if(user.Organizer)
+            {
+                Roleuser = Role.Organizer;
+            }
+            if (user.Player)
+            {
+                Roleuser = Role.Player;
+            }
         }
         
 
