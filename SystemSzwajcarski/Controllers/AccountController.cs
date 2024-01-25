@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,12 +64,31 @@ namespace SystemSzwajcarski.Controllers
         }
         public IActionResult Logout() 
         {
+            string token = HttpContext.Session.GetString("Token");
+            if (!_accountS.ConfirmUser(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
             HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
         }
-        public IActionResult Action()
+        public IActionResult MyAccount()
         {
-            return View();
+            string token = HttpContext.Session.GetString("Token");
+            if (!_accountS.ConfirmUser(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            User user = _accountS.GetUser(token);
+            if(user!=null)
+            {
+                return View(user);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
         }
     }
 }

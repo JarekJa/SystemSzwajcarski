@@ -2,7 +2,9 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using SystemSzwajcarski.Models;
 using SystemSzwajcarski.Services.Interfaces;
@@ -24,18 +26,18 @@ namespace SystemSzwajcarski.Services
             _tokenService = tokenService;
             _config = config;
         }
-        public string Login(UserLogin user)
+        public string Login(UserLogin userlog)
         {
             List<Organizer> organizers = _dbContextSS.organizers.ToList();
-            User user1 = organizers.Find(x => x.Login == user.Login);
-            if (user1 == null)
+           User user = organizers.Find(x => x.Login == userlog.Login);
+            if (user == null)
             {
                 List<Player> players = _dbContextSS.players.ToList();
-                user1 = players.Find(x => x.Login == user.Login);
+                user = players.Find(x => x.Login == userlog.Login);
             }
-            if (user1 != null && BCrypt.Net.BCrypt.Verify(user.Password, user1.Password))
+            if (user != null && BCrypt.Net.BCrypt.Verify(userlog.Password, user.Password))
             {
-                generatedToken = _tokenService.BuildToken(_config["Jwt:Key"].ToString(), _config["Jwt:Issuer"].ToString(), user1);
+                generatedToken = _tokenService.BuildToken(_config["Jwt:Key"].ToString(), _config["Jwt:Issuer"].ToString(), user);
                 if (generatedToken != null)
                 {
                     return generatedToken;
@@ -59,8 +61,47 @@ namespace SystemSzwajcarski.Services
   
             return _dbContextSS.SaveChanges()<=0;
         }
-         
+        public bool ConfirmUser(string token)
+        {
+            if (token == null)
+            {
+                return false;
+            }
+            if (!_tokenService.ValidateToken(_config["Jwt:Key"].ToString(), _config["Jwt:Issuer"].ToString(), token))
+            {
+                return false;
+            }
+            return true;
+        }
 
+        public string UserRole(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokend = tokenHandler.ReadJwtToken(token);
+            List<Claim> clams = tokend.Claims.ToList();
+            string role = clams[2].Value;
+            return role;
+        }
 
+        public User GetUser(string token)
+        {
+            User user;
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokend = tokenHandler.ReadJwtToken(token);
+            List<Claim> clams = tokend.Claims.ToList();
+            string login = clams[3].Value;
+            string role = clams[2].Value;
+            if(role=="Organizator")
+            {
+                List<Organizer> organizers = _dbContextSS.organizers.ToList();
+                user = organizers.Find(x => x.Login == login);
+            }
+            else
+            {
+                List<Player> players = _dbContextSS.players.ToList();
+                user = players.Find(x => x.Login == login);
+            }
+            return user;
+        }
     }
 }

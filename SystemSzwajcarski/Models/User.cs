@@ -10,8 +10,8 @@ namespace SystemSzwajcarski.Models
     {
         public enum Role
         {
-            Player,
-            Organizer
+            Gracz,
+            Organizator
         }
         [Key]
         public int idUser { get; set; }
@@ -35,11 +35,11 @@ namespace SystemSzwajcarski.Models
             Password = password;
             if(user.Organizer)
             {
-                Roleuser = Role.Organizer;
+                Roleuser = Role.Organizator;
             }
             if (user.Player)
             {
-                Roleuser = Role.Player;
+                Roleuser = Role.Gracz;
             }
         }
         

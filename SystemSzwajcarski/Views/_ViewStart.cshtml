@@ -12,11 +12,11 @@
         var tokend = tokenHandler.ReadJwtToken(token);
         List<Claim> clams = tokend.Claims.ToList();
         string role = clams[2].Value;
-        if (role == "Player")
+        if (role == "Gracz")
         {
             layout = "~/Views/Shared/My_Layout/_LayoutPlayer.cshtml";
         }
-        if (role == "Organizer")
+        if (role == "Organizator")
         {
             layout = "~/Views/Shared/My_Layout/_LayoutOrganizer.cshtml";
         }
