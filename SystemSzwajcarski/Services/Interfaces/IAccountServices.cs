@@ -14,6 +14,7 @@ namespace SystemSzwajcarski.Services.Interfaces
         string UserRole(string token);
         User GetUser(string token);
         bool Modifyuser(User user, UserRegister usernew);
+        bool Modifypassord(User user, UserPasswords passowords);
         bool DelateUser(User user, UserLogin userLogin);
     }
 }

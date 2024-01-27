@@ -103,7 +103,18 @@ namespace SystemSzwajcarski.Services
             string role = clams[2].Value;
             return role;
         }
-
+        public bool Modifypassord(User user,UserPasswords passowords)
+        {
+            if(user.Login == passowords.Login && BCrypt.Net.BCrypt.Verify(passowords.OldPassword, user.Password))
+            {
+                user.Password = BC.HashPassword(passowords.NewPassword);
+                return _dbContextSS.SaveChanges() <= 0;
+            }
+            else
+            {
+                return false;
+            }
+        }
         public User GetUser(string token)
         {
             User user;

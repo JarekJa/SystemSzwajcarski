@@ -119,6 +119,10 @@ namespace SystemSzwajcarski.Controllers
         public IActionResult Viewdata()
         {
             string token = HttpContext.Session.GetString("Token");
+            if (!_accountS.ConfirmUser(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
             User user = _accountS.GetUser(token);
             UserRegister usernew = new UserRegister(user);
             return View(usernew);
@@ -126,14 +130,45 @@ namespace SystemSzwajcarski.Controllers
         [HttpPost]
         public IActionResult ChangeData(UserRegister usernew)
         {
+            string token = HttpContext.Session.GetString("Token");
+            if (!_accountS.ConfirmUser(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (!ModelState.IsValid)
             {
                 return View("Viewdata",usernew);
             }
-            string token = HttpContext.Session.GetString("Token");
             User user = _accountS.GetUser(token);
             _accountS.Modifyuser(user,usernew);
             return RedirectToAction("MyAccount", "Account");
+        }
+        [HttpGet]
+        public IActionResult ChangePassord()
+        {
+            string token = HttpContext.Session.GetString("Token");
+            if (!_accountS.ConfirmUser(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return View();
+        }
+        [HttpPost]
+        public IActionResult ChangePassword(UserPasswords passowords)
+        {
+            string token = HttpContext.Session.GetString("Token");
+            if (!_accountS.ConfirmUser(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            User user = _accountS.GetUser(token);
+            _accountS.Modifypassord(user, passowords);
+            
+              return RedirectToAction("MyAccount", "Account");
         }
     }
 }
