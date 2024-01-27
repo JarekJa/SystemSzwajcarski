@@ -8,6 +8,14 @@ namespace SystemSzwajcarski.Models
 {
     public class UserRegister
     {
+        public UserRegister(User user)
+        {
+            Name = user.Name;
+            LastName = user.LastName;
+            Login = user.Login;
+            Email = user.Email;
+            Password = "Pa$$w0rd";
+        }
         public int idUser { get; set; }
         [Required]
         public string Login { get; set; }

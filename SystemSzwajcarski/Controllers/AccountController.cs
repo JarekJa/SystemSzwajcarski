@@ -43,7 +43,7 @@ namespace SystemSzwajcarski.Controllers
         {
             return View();
         }
-
+        [HttpPost]
         public IActionResult Login(UserLogin user)
         {
             if (!ModelState.IsValid)
@@ -72,6 +72,7 @@ namespace SystemSzwajcarski.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
         }
+
         public IActionResult MyAccount()
         {
             string token = HttpContext.Session.GetString("Token");
@@ -89,6 +90,50 @@ namespace SystemSzwajcarski.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+        }
+        [HttpGet]
+        public IActionResult DelateAccount()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult DelateAccount(UserLogin userlog)
+        {
+            string token = HttpContext.Session.GetString("Token");
+            User user = _accountS.GetUser(token);
+            if (!_accountS.ConfirmUser(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(userlog);
+            }
+            if(!_accountS.DelateUser(user,userlog))
+            {
+                return View(userlog);
+            }
+            Logout();
+            return RedirectToAction("Index", "Home");
+        }
+        public IActionResult Viewdata()
+        {
+            string token = HttpContext.Session.GetString("Token");
+            User user = _accountS.GetUser(token);
+            UserRegister usernew = new UserRegister(user);
+            return View(usernew);
+        }
+        [HttpPost]
+        public IActionResult ChangeData(UserRegister usernew)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("Viewdata",usernew);
+            }
+            string token = HttpContext.Session.GetString("Token");
+            User user = _accountS.GetUser(token);
+            _accountS.Modifyuser(user,usernew);
+            return RedirectToAction("MyAccount", "Account");
         }
     }
 }

@@ -13,5 +13,7 @@ namespace SystemSzwajcarski.Services.Interfaces
         bool ConfirmUser(string token);
         string UserRole(string token);
         User GetUser(string token);
+        bool Modifyuser(User user, UserRegister usernew);
+        bool DelateUser(User user, UserLogin userLogin);
     }
 }

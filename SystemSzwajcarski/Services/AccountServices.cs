@@ -61,6 +61,27 @@ namespace SystemSzwajcarski.Services
   
             return _dbContextSS.SaveChanges()<=0;
         }
+        public bool DelateUser(User user,UserLogin userLogin)
+        {
+            if(user.Login==userLogin.Login && BCrypt.Net.BCrypt.Verify(userLogin.Password, user.Password))
+            {
+                if(user.Roleuser.ToString() == "Organizator")
+                {
+                    Organizer organizer = _dbContextSS.organizers.Find(user.idUser);
+                    _dbContextSS.organizers.Remove(organizer);
+                }
+                else
+                {
+                    Player player = _dbContextSS.players.Find(user.idUser);
+                    _dbContextSS.players.Remove(player);
+                }
+                return _dbContextSS.SaveChanges() > 0;
+            }
+            else
+            {
+                return false;
+            }
+        }
         public bool ConfirmUser(string token)
         {
             if (token == null)
@@ -102,6 +123,14 @@ namespace SystemSzwajcarski.Services
                 user = players.Find(x => x.Login == login);
             }
             return user;
+        }
+        public bool Modifyuser(User user,UserRegister usernew)
+        {
+            user.Name = usernew.Name;
+            user.LastName = usernew.LastName;
+            user.Login = usernew.Login;
+            user.Email = usernew.Email;
+            return _dbContextSS.SaveChanges() <= 0;
         }
     }
 }
