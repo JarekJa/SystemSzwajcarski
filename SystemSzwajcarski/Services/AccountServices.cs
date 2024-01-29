@@ -45,9 +45,28 @@ namespace SystemSzwajcarski.Services
             }
             return "";
         }
-
+        private bool IsLogin(UserRegister user)
+        {
+            User userpom;
+            List<Organizer> organizers = _dbContextSS.organizers.ToList();
+            List<Player> players = _dbContextSS.players.ToList();
+            userpom = organizers.Find(x => x.Login == user.Login);
+            if (userpom == null)
+            {
+                userpom = players.Find(x => x.Login == user.Login);
+            }
+            if (userpom != null)
+            {
+                return true;
+            }
+            return false;
+        }
         public bool Register(UserRegister user)
         {
+            if(IsLogin(user))
+            {
+                return false;
+            }
             if (user.Organizer)
             { 
                  Organizer newuser = new Organizer(user, BC.HashPassword(user.Password));
@@ -59,7 +78,7 @@ namespace SystemSzwajcarski.Services
                 _dbContextSS.players.Add(newuser);
             }
   
-            return _dbContextSS.SaveChanges()<=0;
+            return _dbContextSS.SaveChanges()>0;
         }
         public bool DelateUser(User user,UserLogin userLogin)
         {
@@ -137,11 +156,18 @@ namespace SystemSzwajcarski.Services
         }
         public bool Modifyuser(User user,UserRegister usernew)
         {
+            if (user.Login != usernew.Login)
+            {
+                if (IsLogin(usernew))
+                {
+                    return false;
+                }
+            }
             user.Name = usernew.Name;
             user.LastName = usernew.LastName;
             user.Login = usernew.Login;
             user.Email = usernew.Email;
-            return _dbContextSS.SaveChanges() <= 0;
+            return _dbContextSS.SaveChanges() > 0;
         }
     }
 }

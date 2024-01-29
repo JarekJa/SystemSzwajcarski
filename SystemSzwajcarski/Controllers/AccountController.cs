@@ -31,7 +31,7 @@ namespace SystemSzwajcarski.Controllers
                 return View(user);
             }
 
-            if(_accountS.Register(user))
+            if(!_accountS.Register(user))
             {
                 return View(user);
             }
@@ -140,7 +140,10 @@ namespace SystemSzwajcarski.Controllers
                 return View("Viewdata",usernew);
             }
             User user = _accountS.GetUser(token);
-            _accountS.Modifyuser(user,usernew);
+           if(! _accountS.Modifyuser(user,usernew))
+            {
+                return View("Viewdata", usernew);
+            }
             return RedirectToAction("MyAccount", "Account");
         }
         [HttpGet]
