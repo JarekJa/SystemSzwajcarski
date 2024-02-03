@@ -22,7 +22,17 @@
                             <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li>
-                            <a asp-area="" asp-controller="Home" asp-action="Test">Test</a>
+                            <div class="dropdown">
+                                <a asp-area="" asp-controller="Players" asp-action="GetMyPlayers">Moj zawodnicy</a>
+                                <ul>
+                                    <li>
+                                        <a asp-area="" asp-controller="Players" asp-action="AddPlayer">Dodaj zawodnika</a>
+                                    </li>
+                                    <li>
+                                        <a asp-area="" asp-controller="Players" asp-action="GetMyPlayers">Moj zawodnicy</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
                         <li>
                             <div class="dropdown">

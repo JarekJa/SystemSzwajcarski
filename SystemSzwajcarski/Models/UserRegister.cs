@@ -16,7 +16,6 @@ namespace SystemSzwajcarski.Models
             Email = user.Email;
             Password = "Pa$$w0rd";
         }
-        public int idUser { get; set; }
         [Required]
         public string Login { get; set; }
         [Required]

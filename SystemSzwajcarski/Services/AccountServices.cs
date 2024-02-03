@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,47 @@ namespace SystemSzwajcarski.Services
             _tokenService = tokenService;
             _config = config;
         }
+        public bool IsLogin(string login)
+        {
+            User userpom;
+            List<Organizer> organizers = _dbContextSS.organizers.ToList();
+            userpom = organizers.Find(x => x.Login == login);
+            if (userpom == null)
+            {
+                List<Player> players = _dbContextSS.players.ToList();
+                userpom = players.Find(x => x.Login == login);
+            }
+            if (userpom != null)
+            {
+                return true;
+            }
+            return false;
+        }
+        private List<Claim> GetClaims(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokend = tokenHandler.ReadJwtToken(token);
+            return tokend.Claims.ToList();
+        }
+        public bool Register(UserRegister user)
+        {
+            if (IsLogin(user.Login))
+            {
+                return false;
+            }
+            if (user.Organizer)
+            {
+                Organizer newuser = new Organizer(user, BC.HashPassword(user.Password));
+                _dbContextSS.organizers.Add(newuser);
+            }
+            if (user.Player)
+            {
+                Player newuser = new Player(user, BC.HashPassword(user.Password));
+                _dbContextSS.players.Add(newuser);
+            }
+
+            return _dbContextSS.SaveChanges() > 0;
+        }
         public string Login(UserLogin userlog)
         {
             List<Organizer> organizers = _dbContextSS.organizers.ToList();
@@ -45,40 +87,17 @@ namespace SystemSzwajcarski.Services
             }
             return "";
         }
-        private bool IsLogin(UserRegister user)
+        public bool ConfirmUser(string token)
         {
-            User userpom;
-            List<Organizer> organizers = _dbContextSS.organizers.ToList();
-            List<Player> players = _dbContextSS.players.ToList();
-            userpom = organizers.Find(x => x.Login == user.Login);
-            if (userpom == null)
-            {
-                userpom = players.Find(x => x.Login == user.Login);
-            }
-            if (userpom != null)
-            {
-                return true;
-            }
-            return false;
-        }
-        public bool Register(UserRegister user)
-        {
-            if(IsLogin(user))
+            if (token == null)
             {
                 return false;
             }
-            if (user.Organizer)
-            { 
-                 Organizer newuser = new Organizer(user, BC.HashPassword(user.Password));
-                _dbContextSS.organizers.Add(newuser);
-            }
-            if (user.Player)
+            if (!_tokenService.ValidateToken(_config["Jwt:Key"].ToString(), _config["Jwt:Issuer"].ToString(), token))
             {
-                Player newuser = new Player(user, BC.HashPassword(user.Password));
-                _dbContextSS.players.Add(newuser);
+                return false;
             }
-  
-            return _dbContextSS.SaveChanges()>0;
+            return true;
         }
         public bool DelateUser(User user,UserLogin userLogin)
         {
@@ -101,27 +120,6 @@ namespace SystemSzwajcarski.Services
                 return false;
             }
         }
-        public bool ConfirmUser(string token)
-        {
-            if (token == null)
-            {
-                return false;
-            }
-            if (!_tokenService.ValidateToken(_config["Jwt:Key"].ToString(), _config["Jwt:Issuer"].ToString(), token))
-            {
-                return false;
-            }
-            return true;
-        }
-
-        public string UserRole(string token)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var tokend = tokenHandler.ReadJwtToken(token);
-            List<Claim> clams = tokend.Claims.ToList();
-            string role = clams[2].Value;
-            return role;
-        }
         public bool Modifypassord(User user,UserPasswords passowords)
         {
             if(user.Login == passowords.Login && BCrypt.Net.BCrypt.Verify(passowords.OldPassword, user.Password))
@@ -134,12 +132,31 @@ namespace SystemSzwajcarski.Services
                 return false;
             }
         }
+        public bool Modifyuser(User user, UserRegister usernew)
+        {
+            if (user.Login != usernew.Login)
+            {
+                if (IsLogin(usernew.Login))
+                {
+                    return false;
+                }
+            }
+            user.Name = usernew.Name;
+            user.LastName = usernew.LastName;
+            user.Login = usernew.Login;
+            user.Email = usernew.Email;
+            return _dbContextSS.SaveChanges() > 0;
+        }
+        public string UserRole(string token)
+        {
+            List<Claim> clams = GetClaims(token);
+            string role = clams[2].Value;
+            return role;
+        }
         public User GetUser(string token)
         {
             User user;
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var tokend = tokenHandler.ReadJwtToken(token);
-            List<Claim> clams = tokend.Claims.ToList();
+            List<Claim> clams = GetClaims(token);
             string login = clams[3].Value;
             string role = clams[2].Value;
             if(role=="Organizator")
@@ -151,23 +168,29 @@ namespace SystemSzwajcarski.Services
             {
                 List<Player> players = _dbContextSS.players.ToList();
                 user = players.Find(x => x.Login == login);
+               
             }
             return user;
         }
-        public bool Modifyuser(User user,UserRegister usernew)
+        public Organizer GetOrganizer(string token)
         {
-            if (user.Login != usernew.Login)
-            {
-                if (IsLogin(usernew))
-                {
-                    return false;
-                }
-            }
-            user.Name = usernew.Name;
-            user.LastName = usernew.LastName;
-            user.Login = usernew.Login;
-            user.Email = usernew.Email;
-            return _dbContextSS.SaveChanges() > 0;
+            Organizer user;
+            List<Claim> clams = GetClaims(token);
+            string login = clams[3].Value;
+            string role = clams[2].Value;
+            List<Organizer> organizers = _dbContextSS.organizers.Include(a => a.Players).ThenInclude(sc => sc.Player).ToList();
+            user = organizers.Find(x => x.Login == login);
+            return user;
+        }
+        public Player GetPlayer(string token)
+        {
+            Player user;
+            List<Claim> clams = GetClaims(token);
+            string login = clams[3].Value;
+            string role = clams[2].Value;
+            List<Player> players = _dbContextSS.players.ToList();
+            user = players.Find(x => x.Login == login);
+            return user;
         }
     }
 }

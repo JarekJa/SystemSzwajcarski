@@ -34,6 +34,7 @@ namespace SystemSzwajcarski
             services.AddControllersWithViews();
             services.AddScoped<IAccountServices, AccountServices>();
             services.AddTransient<ITokenService, TokenService>();
+            services.AddTransient<IPlayersServices, PlayersServices>();
             services.AddDbContext<DbContextSS>(builder => { builder.UseSqlServer(@"Data Source=(localdb)\mssqllocaldb;Initial Catalog=dbSS; Integrated Security=True"); });
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

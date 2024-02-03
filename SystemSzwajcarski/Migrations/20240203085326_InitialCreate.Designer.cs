@@ -9,8 +9,8 @@ using SystemSzwajcarski;
 namespace SystemSzwajcarski.Migrations
 {
     [DbContext(typeof(DbContextSS))]
-    [Migration("20240122173501_init")]
-    partial class init
+    [Migration("20240203085326_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -78,6 +78,60 @@ namespace SystemSzwajcarski.Migrations
                     b.HasKey("idUser");
 
                     b.ToTable("players");
+                });
+
+            modelBuilder.Entity("SystemSzwajcarski.Models.RelationOP", b =>
+                {
+                    b.Property<int>("idRelation")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("OrganizerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PlayerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Ranking")
+                        .HasColumnType("int");
+
+                    b.HasKey("idRelation");
+
+                    b.HasIndex("OrganizerId");
+
+                    b.HasIndex("PlayerId");
+
+                    b.ToTable("RelationOP");
+                });
+
+            modelBuilder.Entity("SystemSzwajcarski.Models.RelationOP", b =>
+                {
+                    b.HasOne("SystemSzwajcarski.Models.Organizer", "Organizer")
+                        .WithMany("Players")
+                        .HasForeignKey("OrganizerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SystemSzwajcarski.Models.Player", "Player")
+                        .WithMany("Organizers")
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Organizer");
+
+                    b.Navigation("Player");
+                });
+
+            modelBuilder.Entity("SystemSzwajcarski.Models.Organizer", b =>
+                {
+                    b.Navigation("Players");
+                });
+
+            modelBuilder.Entity("SystemSzwajcarski.Models.Player", b =>
+                {
+                    b.Navigation("Organizers");
                 });
 #pragma warning restore 612, 618
         }

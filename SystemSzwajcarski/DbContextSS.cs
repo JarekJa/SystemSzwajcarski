@@ -11,7 +11,7 @@ namespace SystemSzwajcarski
         }
         public DbSet<Organizer> organizers { get; set; }
         public DbSet<Player> players { get; set; }
-
+        public DbSet<RelationOP> RelationOP { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
