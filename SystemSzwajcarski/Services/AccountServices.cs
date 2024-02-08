@@ -29,13 +29,10 @@ namespace SystemSzwajcarski.Services
         }
         public bool IsLogin(string login)
         {
-            User userpom;
-            List<Organizer> organizers = _dbContextSS.organizers.ToList();
-            userpom = organizers.Find(x => x.Login == login);
+            User userpom = _dbContextSS.organizers.Where(x => x.Login == login).FirstOrDefault();
             if (userpom == null)
             {
-                List<Player> players = _dbContextSS.players.ToList();
-                userpom = players.Find(x => x.Login == login);
+                userpom = _dbContextSS.players.Where(x => x.Login == login).FirstOrDefault();
             }
             if (userpom != null)
             {
@@ -70,18 +67,31 @@ namespace SystemSzwajcarski.Services
         }
         public string Login(UserLogin userlog)
         {
-            List<Organizer> organizers = _dbContextSS.organizers.ToList();
-           User user = organizers.Find(x => x.Login == userlog.Login);
+            User user = _dbContextSS.organizers.Where(x => x.Login == userlog.Login).FirstOrDefault();
             if (user == null)
             {
                 List<Player> players = _dbContextSS.players.ToList();
-                user = players.Find(x => x.Login == userlog.Login);
+                Player player=players.Find(x => x.Login == userlog.Login);
+                if (player!=null)
+                {
+                    if (player.StatusCreatures.ToString() == "Deleted")
+                    {
+                        return "";
+                    }
+                    if (player.StatusCreatures.ToString() == "WithOrganizer")
+                    {
+                        player.ChangeStatus(3);
+                        _dbContextSS.SaveChanges();
+                    }
+                }
+                user = player;
             }
             if (user != null && BCrypt.Net.BCrypt.Verify(userlog.Password, user.Password))
             {
                 generatedToken = _tokenService.BuildToken(_config["Jwt:Key"].ToString(), _config["Jwt:Issuer"].ToString(), user);
                 if (generatedToken != null)
                 {
+
                     return generatedToken;
                 }
             }
@@ -111,7 +121,17 @@ namespace SystemSzwajcarski.Services
                 else
                 {
                     Player player = _dbContextSS.players.Find(user.idUser);
-                    _dbContextSS.players.Remove(player);
+                    if (player.StatusCreatures.ToString()== "Register")
+                    {
+                        _dbContextSS.players.Remove(player);
+                    }
+                    else 
+                    {
+                        player.Password = null;
+                        player.Login = null;
+                        player.ChangeStatus(4);
+                        
+                    }
                 }
                 return _dbContextSS.SaveChanges() > 0;
             }
@@ -145,7 +165,7 @@ namespace SystemSzwajcarski.Services
             user.LastName = usernew.LastName;
             user.Login = usernew.Login;
             user.Email = usernew.Email;
-            return _dbContextSS.SaveChanges() > 0;
+            return _dbContextSS.SaveChanges() >= 0;
         }
         public string UserRole(string token)
         {
@@ -161,36 +181,29 @@ namespace SystemSzwajcarski.Services
             string role = clams[2].Value;
             if(role=="Organizator")
             {
-                List<Organizer> organizers = _dbContextSS.organizers.ToList();
-                user = organizers.Find(x => x.Login == login);
+                user = _dbContextSS.organizers.Where(x => x.Login == login).FirstOrDefault();
             }
             else
             {
-                List<Player> players = _dbContextSS.players.ToList();
-                user = players.Find(x => x.Login == login);
-               
+                user = _dbContextSS.players.Where(x => x.Login == login).FirstOrDefault();
             }
             return user;
         }
         public Organizer GetOrganizer(string token)
         {
-            Organizer user;
             List<Claim> clams = GetClaims(token);
             string login = clams[3].Value;
             string role = clams[2].Value;
-            List<Organizer> organizers = _dbContextSS.organizers.Include(a => a.Players).ThenInclude(sc => sc.Player).ToList();
-            user = organizers.Find(x => x.Login == login);
-            return user;
+            Organizer organizers = _dbContextSS.organizers.Where(x => x.Login == login).FirstOrDefault();
+            return organizers;
         }
         public Player GetPlayer(string token)
         {
-            Player user;
             List<Claim> clams = GetClaims(token);
             string login = clams[3].Value;
             string role = clams[2].Value;
-            List<Player> players = _dbContextSS.players.ToList();
-            user = players.Find(x => x.Login == login);
-            return user;
+            Player player = _dbContextSS.players.Where(x => x.Login == login).FirstOrDefault();
+            return player;
         }
     }
 }

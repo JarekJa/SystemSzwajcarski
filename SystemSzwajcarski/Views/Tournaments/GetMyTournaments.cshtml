@@ -1,0 +1,15 @@
+﻿@model IEnumerable<SystemSzwajcarski.Models.Main.Tournament>
+<h1>Lista turniejów</h1>
+<ul>
+    @foreach (var player in Model)
+    {
+    <li>
+
+        <span>Nazwa: </span>  @player.Name
+        <span>Liczba zawodnikow: </span> @player.NumberPlayers
+        <span>Dostępnoś: </span> @player.Access
+        <span>Status: </span> @player.Status
+    </li>
+    }
+</ul>
+

@@ -3,10 +3,11 @@
 <ul>
     @foreach (var player in Model)
     {
-        <li>
+    <li>
 
-            @player.Player.Name - @player.Player.LastName - @player.Ranking
+        @player.Player.Name - @player.Player.LastName - @player.Ranking
+        <a href="@Url.Action("Details","Players", new {Id=player.idRelation})">Szczagóły</a>
 
-        </li>
+    </li>
     }
 </ul>

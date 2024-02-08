@@ -1,0 +1,14 @@
+﻿@model SystemSzwajcarski.Models.Tournaments.TournamentAdd
+<h1>Tworzenie zawodnika</h1>
+
+@using (Html.BeginForm("AddTournament", "Tournaments", FormMethod.Post))
+{
+    @Html.ValidationSummary();
+    <span>Nazwa: </span>@Html.TextBoxFor(x => x.Name)
+    <span>Publiczny: </span>@Html.CheckBoxFor(x => x.PublicT, true)
+    <span>Prywatny: </span>@Html.CheckBoxFor(x => x.PrivateT, true)
+    <span>Maksymalna liczba rund : </span>@Html.TextBoxFor(x => x.MaxRound)
+    <button type="submit" name="Command" value="Save">Zapisz</button>
+    <button type="submit" name="Command" value="AddPlayer">Dodaj zawodników</button>
+}
+

@@ -29,7 +29,7 @@ namespace SystemSzwajcarski.Models
             }
             else
             {
-                this.Ranking = Int32.Parse(Ranking);
+                this.Ranking = int.Parse(Ranking);
             }
         }
 

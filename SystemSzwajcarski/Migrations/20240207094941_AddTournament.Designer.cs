@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SystemSzwajcarski;
 
 namespace SystemSzwajcarski.Migrations
 {
     [DbContext(typeof(DbContextSS))]
-    partial class DbContextSSModelSnapshot : ModelSnapshot
+    [Migration("20240207094941_AddTournament")]
+    partial class AddTournament
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,13 +70,7 @@ namespace SystemSzwajcarski.Migrations
                     b.Property<int>("CurrentRound")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MaxRound")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("NumberPlayers")
+                    b.Property<int>("MaxRound")
                         .HasColumnType("int");
 
                     b.Property<int?>("OrganizeridUser")
@@ -236,7 +232,7 @@ namespace SystemSzwajcarski.Migrations
             modelBuilder.Entity("SystemSzwajcarski.Models.Main.Tournament", b =>
                 {
                     b.HasOne("SystemSzwajcarski.Models.Organizer", "Organizer")
-                        .WithMany("Tournament")
+                        .WithMany()
                         .HasForeignKey("OrganizeridUser");
 
                     b.Navigation("Organizer");
@@ -290,8 +286,6 @@ namespace SystemSzwajcarski.Migrations
             modelBuilder.Entity("SystemSzwajcarski.Models.Organizer", b =>
                 {
                     b.Navigation("Players");
-
-                    b.Navigation("Tournament");
                 });
 
             modelBuilder.Entity("SystemSzwajcarski.Models.Player", b =>
