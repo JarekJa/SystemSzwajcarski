@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SystemSzwajcarski.Models.Main;
+using SystemSzwajcarski.Models.Relation;
 
 namespace SystemSzwajcarski.Models
 {
@@ -16,7 +17,7 @@ namespace SystemSzwajcarski.Models
             Deleted
         }
         public List<RelationOP> Organizers { get; set; } = new List<RelationOP>();
-        List<Tournament> Tournament { get; set; } = new List<Tournament>();
+        public List<RelationTP> Tournament { get; set; } = new List<RelationTP>();
         public StatusAdd StatusCreatures { get; set; }
         public int Ranking { get; set; } = 0;
         public void ChangeStatus(int role)

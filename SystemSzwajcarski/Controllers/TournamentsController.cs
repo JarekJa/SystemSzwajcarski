@@ -58,11 +58,11 @@ namespace SystemSzwajcarski.Controllers
             }
             if(Command== "Save")
             {
-                return RedirectToAction("GetMyTournaments", " Tournaments");
+                return RedirectToAction("GetMyTournaments", "Tournaments");
             }
             else
             {
-                return RedirectToAction("ViewPlayertoTournament", " Tournaments", new { Id = tournamentAdd.id });
+                return RedirectToAction("ViewPlayertoTournament", "Tournaments", new { Id = tournamentAdd.id });
             }
         }
         public IActionResult GetMyTournaments()
@@ -82,7 +82,68 @@ namespace SystemSzwajcarski.Controllers
         }
         public IActionResult ViewPlayertoTournament(int id)
         {
-            return View();
+            string token = HttpContext.Session.GetString("Token");
+            if (!_accountS.ConfirmUser(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            if (_accountS.UserRole(token) != "Organizator")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            Organizer organizer = _accountS.GetOrganizer(token);
+            PlayerstoAdd playerstoAdd = _tournamentsS.GetPLayertoAdd(organizer,id); 
+            return View(playerstoAdd);
+        }
+        public IActionResult ViewPlayer(int id)
+        {
+            string token = HttpContext.Session.GetString("Token");
+            if (!_accountS.ConfirmUser(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            if (_accountS.UserRole(token) != "Organizator")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            PlayerstoAdd playerstoAdd = _tournamentsS.GetPLayer(id);
+            return View(playerstoAdd);
+        }
+        public IActionResult AddPlayertoTournament(PlayerstoAdd playerstoAdd)
+        {
+            string token = HttpContext.Session.GetString("Token");
+            if (!_accountS.ConfirmUser(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            if (_accountS.UserRole(token) != "Organizator")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            Organizer organizer = _accountS.GetOrganizer(token);
+            if (!_tournamentsS.AddPlayertoTournament(organizer, playerstoAdd))
+            {
+                return RedirectToAction("ViewPlayertoTournament", "Tournaments", new { Id = playerstoAdd.TournamentId });
+            }
+            return RedirectToAction("GetMyTournaments", "Tournaments");
+        }
+        public IActionResult DeletePlayertoTournament(PlayerstoAdd playerstoAdd)
+        {
+            string token = HttpContext.Session.GetString("Token");
+            if (!_accountS.ConfirmUser(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            if (_accountS.UserRole(token) != "Organizator")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            Organizer organizer = _accountS.GetOrganizer(token);
+            if (!_tournamentsS.DeletePlayertoTournament(organizer, playerstoAdd))
+            {
+                return RedirectToAction("ViewPlayertoTournament", "Tournaments", new { Id = playerstoAdd.TournamentId });
+            }
+            return RedirectToAction("GetMyTournaments", "Tournaments");
         }
     }
 }

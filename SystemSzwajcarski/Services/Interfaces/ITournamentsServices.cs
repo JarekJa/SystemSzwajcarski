@@ -12,5 +12,9 @@ namespace SystemSzwajcarski.Services.Interfaces
     {
         public bool AddTournament(Organizer organizer, TournamentAdd tournamentAdd);
         public List<Tournament> GetMyTournaments(Organizer organizer);
+        public PlayerstoAdd GetPLayertoAdd(Organizer organizer, int id);
+        public bool AddPlayertoTournament(Organizer organizer, PlayerstoAdd playerstoAdd);
+        public bool DeletePlayertoTournament(Organizer organizer, PlayerstoAdd playerstoAdd);
+        public PlayerstoAdd GetPLayer(int id);
     }
 }
