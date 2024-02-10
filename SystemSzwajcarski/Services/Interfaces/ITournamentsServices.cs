@@ -16,5 +16,6 @@ namespace SystemSzwajcarski.Services.Interfaces
         public bool AddPlayertoTournament(Organizer organizer, PlayerstoAdd playerstoAdd);
         public bool DeletePlayertoTournament(Organizer organizer, PlayerstoAdd playerstoAdd);
         public PlayerstoAdd GetPLayer(int id);
+        public bool DeleteTournament(int id);
     }
 }

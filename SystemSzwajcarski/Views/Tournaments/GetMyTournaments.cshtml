@@ -7,10 +7,15 @@
 
         <span>Nazwa: </span>  @tournament.Name
         <span>Liczba zawodnikow: </span> @tournament.NumberPlayers
+        @if (@tournament.MaxRound!=null)
+        {
+        <span>Liczba rund: </span> @tournament.MaxRound
+        }
         <span>Dostępnoś: </span> @tournament.Access
         <span>Status: </span> @tournament.Status
         <a href="@Url.Action("ViewPlayertoTournament","Tournaments", new {Id=tournament.idTournament})">Dodaj Zawodników</a>
-        <a href="@Url.Action("ViewPlayer","Tournaments", new {Id=tournament.idTournament})">Zawodnicy</a>  
+        <a href="@Url.Action("ViewPlayer","Tournaments", new {Id=tournament.idTournament})">Zawodnicy</a>
+        <a href="@Url.Action("DeleteTournament","Tournaments", new {Id=tournament.idTournament})">Usuń</a>
     </li>
     }
 </ul>

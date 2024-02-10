@@ -20,6 +20,13 @@ namespace SystemSzwajcarski.Services
         }
         public bool AddTournament(Organizer organizer, TournamentAdd tournamentAdd)
         {
+            if(tournamentAdd.MaxRound!=null)
+            {
+                if(int.Parse(tournamentAdd.MaxRound)<=1)
+                {
+                    return false;
+                }
+            }
             if(!(tournamentAdd.PrivateT ^ tournamentAdd.PublicT))
             {
                 return false;
@@ -37,9 +44,27 @@ namespace SystemSzwajcarski.Services
             return organizer.Tournament;
         }
         public PlayerstoAdd GetPLayertoAdd(Organizer organizer,int id)
-        {
+        { 
+            List<int> playerIds = _dbContextSS.Tournaments.Where(tournament => tournament.idTournament == id).SelectMany(tournament => tournament.Players.Select(player => player.PlayerId)).ToList();
             _dbContextSS.Entry(organizer).Collection(sc => sc.Players).Query().Include(sc => sc.Player).Load();
-            PlayerstoAdd playerstoAdd = new PlayerstoAdd(organizer.Players,id);
+            List<RelationOP> relationOP = new List<RelationOP>();
+            bool Added = false;
+            foreach(RelationOP relation in organizer.Players)
+            {
+                Added = false;
+                foreach(int i in playerIds)
+                {
+                    if(relation.PlayerId==i)
+                    {
+                        Added = true;
+                    }
+                }
+                if(!Added)
+                {
+                    relationOP.Add(relation);
+                }
+            }
+            PlayerstoAdd playerstoAdd = new PlayerstoAdd(relationOP, id);
             return playerstoAdd;
         }
         public PlayerstoAdd GetPLayer(int id)
@@ -56,8 +81,9 @@ namespace SystemSzwajcarski.Services
             {
                 if (playerstoAdd.ToAdd[i])
                 {
-                    RelationTP relationTP = new RelationTP(tournament, organizer.Players.FirstOrDefault(x => x.idRelation == playerstoAdd.idRelation[i]));
-                    organizer.Players[i].Player.Tournament.Add(relationTP);
+                    RelationOP relationOP = organizer.Players.FirstOrDefault(x => x.idRelation == playerstoAdd.idRelation[i]);
+                    RelationTP relationTP = new RelationTP(tournament, relationOP);
+                    relationTP.Player.Tournament.Add(relationTP);
                     tournament.Players.Add(relationTP);
                     tournament.NumberPlayers++;
                 }
@@ -80,6 +106,12 @@ namespace SystemSzwajcarski.Services
             }
             _dbContextSS.RelationTP.RemoveRange(ToRemove);
             return _dbContextSS.SaveChanges() >= 0;
+        }
+        public bool DeleteTournament(int id)
+        {
+            Tournament tournament= _dbContextSS.Tournaments.Find(id);
+            _dbContextSS.Tournaments.Remove(tournament);
+            return _dbContextSS.SaveChanges() > 0;
         }
 
     }
