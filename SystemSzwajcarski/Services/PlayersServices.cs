@@ -41,17 +41,17 @@ namespace SystemSzwajcarski.Services
             _dbContextSS.RelationOP.Add(relationOP);
             return _dbContextSS.SaveChanges() > 0;
         }
-        public bool PlayerHasOrganize(Player player,Organizer organizer)
+        public bool PlayerHasOrganize(Player player, Organizer organizer)
         {
-            bool itis = false;
+            bool Added = false;
             foreach(RelationOP relationOP in organizer.Players)
             {
                 if(player.idUser==relationOP.Player.idUser)
                 {
-                    itis = true;
+                    Added = true;
                 }
             }
-            return itis;
+            return Added;
         }
         public List<RelationOP> GetMyPlayers(Organizer organizer)
         {

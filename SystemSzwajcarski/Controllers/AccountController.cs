@@ -26,7 +26,7 @@ namespace SystemSzwajcarski.Controllers
         [HttpPost]
         public IActionResult Register(UserRegister user)
         {
-            if (!ModelState.IsValid || !(user.Player ^ user.Organizer))
+            if (!ModelState.IsValid)
             {
                 return View(user);
             }

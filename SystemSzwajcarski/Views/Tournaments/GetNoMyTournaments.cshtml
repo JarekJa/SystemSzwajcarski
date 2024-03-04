@@ -1,0 +1,20 @@
+﻿@model IEnumerable<SystemSzwajcarski.Models.Main.Tournament>
+<h1>Lista turniejów</h1>
+<ul>
+    @foreach (var tournament in Model)
+    {
+    <li>
+        <span>Imie organizatora: </span>  @tournament.Organizer.Name
+        <span>Nazwisko organizatora: </span> @tournament.Organizer.LastName
+        <span>Nazwa: </span>  @tournament.Name
+        <span>Liczba zawodnikow: </span> @tournament.NumberPlayers
+        @if (@tournament.MaxRound != null)
+        {
+            <span>Liczba rund: </span> @tournament.MaxRound
+        }
+        <span>Dostępnoś: </span> @tournament.Access
+        <span>Status: </span> @tournament.Status
+        <a href="@Url.Action("AddTournamentToPlayer", "Tournaments", new { Id = tournament.idTournament })">Dołącz</a>
+    </li>
+    }
+</ul>

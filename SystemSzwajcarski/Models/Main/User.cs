@@ -3,16 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using SystemSzwajcarski.Models.Account;
 
 namespace SystemSzwajcarski.Models
 {
     public class User
     {
-        public enum Role
-        {
-            Gracz,
-            Organizator
-        }
         [Key]
         public int idUser { get; set; }
         public string Login { get; set; }
@@ -33,14 +29,7 @@ namespace SystemSzwajcarski.Models
             Login = user.Login;
             Email = user.Email;
             Password = password;
-            if(user.Organizer)
-            {
-                Roleuser = Role.Organizator;
-            }
-            if (user.Player)
-            {
-                Roleuser = Role.Gracz;
-            }
+            Roleuser = user.Roleuser;
         }
         
 

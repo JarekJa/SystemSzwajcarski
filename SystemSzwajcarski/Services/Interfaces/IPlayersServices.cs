@@ -16,5 +16,6 @@ namespace SystemSzwajcarski.Services.Interfaces
         public bool Addtoorganizer(Organizer organizer, int id);
         public bool DelatePlayer(int id);
         public RelationOP GetRelationOP(Organizer organizer, int id);
+        public bool PlayerHasOrganize(Player player, Organizer organizer);
     }
 }

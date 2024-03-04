@@ -27,10 +27,6 @@ namespace SystemSzwajcarski.Services
                     return false;
                 }
             }
-            if(!(tournamentAdd.PrivateT ^ tournamentAdd.PublicT))
-            {
-                return false;
-            }
             Tournament tournament = new Tournament(organizer,tournamentAdd);
             organizer.Tournament.Add(tournament);
             _dbContextSS.Tournaments.Add(tournament);
@@ -42,6 +38,52 @@ namespace SystemSzwajcarski.Services
         {
             _dbContextSS.Entry(organizer).Collection(sc => sc.Tournament).Load();
             return organizer.Tournament;
+        }
+        public List<Tournament> GetNoMyTournaments(Player player)
+        {
+            List<Tournament> tournaments = _dbContextSS.Tournaments.Where(sc=>sc.Status==TournamentStatus.tworzony).Where(sc => sc.Access != TournamentAccess.prywatny).Include(sc=>sc.Organizer).ToList();
+           
+            List<int> tournamentIds = _dbContextSS.Entry(player).Collection(sc => sc.Tournament).Query().Select(x => x.TournamentId).ToList() ;
+            List<int> organizerIds = _dbContextSS.Entry(player).Collection(sc => sc.Organizers).Query().Select(x => x.OrganizerId).ToList();
+            List<Tournament> noMyTournaments = new List<Tournament>();
+            bool Added = false;
+            bool HasOrganizer = false;
+            foreach (Tournament tournament in tournaments)
+            {
+                Added = false;
+                if (tournament.Access==TournamentAccess.orgraniczony)
+                {
+                    HasOrganizer = false;
+                    foreach (int id in organizerIds)
+                    {
+                        if (tournament.Organizer.idUser==id)
+                        {
+                            HasOrganizer = true;
+                        }
+                    }
+                    if(!HasOrganizer)
+                    {
+                        Added = true;
+                    }
+                }
+                for (int i=0;i<tournamentIds.Count&&!Added;i++)
+                {
+                    if (tournament.idTournament == tournamentIds[i])
+                    {
+                        Added = true;
+                    }
+                }
+                if (!Added)
+                {
+                   noMyTournaments.Add(tournament);
+                }
+            }
+            return noMyTournaments;
+        }
+        public List<RelationTP> GetMyTournaments(Player player)
+        {
+            _dbContextSS.Entry(player).Collection(sc => sc.Tournament).Query().Include(sc=>sc.Tournament).ThenInclude(sc=>sc.Organizer).Load();
+            return player.Tournament;
         }
         public PlayerstoAdd GetPLayertoAdd(Organizer organizer,int id)
         { 
@@ -72,6 +114,25 @@ namespace SystemSzwajcarski.Services
             Tournament tournament = _dbContextSS.Tournaments.Include(s => s.Players).ThenInclude(sc => sc.Player).FirstOrDefault(x => x.idTournament == id);
             PlayerstoAdd playerstoAdd = new PlayerstoAdd(tournament);
             return playerstoAdd;
+        }
+        public bool AddTournamentToPlayer(Player player, int id)
+        {
+            Tournament tournament = _dbContextSS.Tournaments.Include(sc=>sc.Organizer).FirstOrDefault(sc => sc.idTournament == id);
+            RelationTP relationTP;
+            if(tournament.Access==TournamentAccess.publiczny)
+            {
+                relationTP = new RelationTP(tournament,player);
+                tournament.Players.Add(relationTP);
+                tournament.NumberPlayers++;
+            }
+            else if(tournament.Access == TournamentAccess.orgraniczony)
+            {
+                RelationOP relationOP = _dbContextSS.Entry(tournament.Organizer).Collection(sc => sc.Players).Query().FirstOrDefault(sc=>sc.PlayerId==player.idUser);
+                relationTP = new RelationTP(tournament,relationOP);
+                tournament.Players.Add(relationTP);
+                tournament.NumberPlayers++;
+            }
+            return _dbContextSS.SaveChanges() >= 0;
         }
         public bool AddPlayertoTournament(Organizer organizer, PlayerstoAdd playerstoAdd)
         {
@@ -105,6 +166,16 @@ namespace SystemSzwajcarski.Services
                 }
             }
             _dbContextSS.RelationTP.RemoveRange(ToRemove);
+            return _dbContextSS.SaveChanges() >= 0;
+        }
+        public Tournament GetTournament(int id)
+        {
+            return _dbContextSS.Tournaments.Find(id);
+        }
+        public bool ModifyTournament(TournamentAdd tournamentAdd)
+        {
+            Tournament tournament = _dbContextSS.Tournaments.Find(tournamentAdd.id);
+            tournament.Modify(tournamentAdd);
             return _dbContextSS.SaveChanges() >= 0;
         }
         public bool DeleteTournament(int id)

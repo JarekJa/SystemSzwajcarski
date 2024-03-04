@@ -1,21 +1,19 @@
 ﻿@model SystemSzwajcarski.Models.Tournaments.TournamentAdd
 @using SystemSzwajcarski.Models.Tournaments
-<h1>Tworzenie turnieju</h1>
+<h1>Modyfikacja turnieju</h1>
 
-@using (Html.BeginForm("AddTournament", "Tournaments", FormMethod.Post))
+@using (Html.BeginForm("ChangeData", "Tournaments", FormMethod.Post))
 {
     @Html.ValidationSummary();
+    @Html.HiddenFor(x => x.id)
     <span>Nazwa: </span>@Html.TextBoxFor(x => x.Name)
-
     <span>Dostęp: </span>
     <select asp-for="Access"
             asp-items="Html.GetEnumSelectList<TournamentAccess>()">
         <option>Wybierz typ</option>
     </select>
     <span asp-validation-for="Access"></span>
-
     <span>Maksymalna liczba rund : </span>@Html.TextBoxFor(x => x.MaxRound)
-    <button type="submit" name="Command" value="Save">Zapisz</button>
-    <button type="submit" name="Command" value="AddPlayer">Dodaj zawodników</button>
+    <button type="submit" name="Command" value="Save">Modyfikuj</button>
 }
 

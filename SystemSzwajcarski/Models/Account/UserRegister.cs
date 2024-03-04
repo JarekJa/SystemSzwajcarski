@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using SystemSzwajcarski.Models.Account;
 
 namespace SystemSzwajcarski.Models
 {
@@ -16,13 +17,16 @@ namespace SystemSzwajcarski.Models
             Email = user.Email;
             Password = "Pa$$w0rd";
         }
+        public UserRegister()
+        {
+
+        }
         [Required]
         public string Login { get; set; }
         [Required]
         public string Name { get; set; }
 
-        public bool Organizer { get; set; }
-        public bool Player { get; set; }
+        public Role Roleuser { get; set; }
 
         [Required]
         public string LastName { get; set; }
@@ -32,10 +36,5 @@ namespace SystemSzwajcarski.Models
         [Required]
         public string Password { get; set; }
 
-        public UserRegister()
-        {
-            Organizer = false;
-            Player = false;
-        }
     }
 }

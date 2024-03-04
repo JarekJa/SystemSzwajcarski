@@ -10,17 +10,6 @@ namespace SystemSzwajcarski.Models.Main
 {
     public class Tournament
     {
-        public enum TournamentAccess
-        {
-            prywatny ,
-            publiczny
-        }
-        public enum TournamentStatus
-        {
-            tworzony,
-            trwający,
-            zakończony
-        }
         [Key]
         public int idTournament { get; set; }
         public Organizer Organizer { get; set; }
@@ -41,17 +30,24 @@ namespace SystemSzwajcarski.Models.Main
             Organizer = organizer;
             Name = tournamentAdd.Name;
             Status = TournamentStatus.tworzony;
-            if(tournamentAdd.MaxRound!=null)
+            Access = tournamentAdd.Access;
+            if (tournamentAdd.MaxRound!=null)
             {
                 MaxRound = int.Parse(tournamentAdd.MaxRound);
             }
-            if (tournamentAdd.PrivateT)
+        }
+
+        public void Modify(TournamentAdd tournamentAdd)
+        {
+            Name = tournamentAdd.Name;
+            Access = tournamentAdd.Access;
+            if (tournamentAdd.MaxRound != null)
             {
-                Access = TournamentAccess.prywatny;
+                MaxRound = int.Parse(tournamentAdd.MaxRound);
             }
-            if (tournamentAdd.PublicT)
+            else
             {
-                Access = TournamentAccess.publiczny;
+                MaxRound = null;
             }
         }
     }

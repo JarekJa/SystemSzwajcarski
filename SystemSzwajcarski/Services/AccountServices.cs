@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using SystemSzwajcarski.Models;
+using SystemSzwajcarski.Models.Account;
 using SystemSzwajcarski.Services.Interfaces;
 using BC=BCrypt.Net.BCrypt;
 
@@ -52,12 +53,12 @@ namespace SystemSzwajcarski.Services
             {
                 return false;
             }
-            if (user.Organizer)
+            if (user.Roleuser==Role.Organizator)
             {
                 Organizer newuser = new Organizer(user, BC.HashPassword(user.Password));
                 _dbContextSS.organizers.Add(newuser);
             }
-            if (user.Player)
+            if (user.Roleuser==Role.Gracz)
             {
                 Player newuser = new Player(user, BC.HashPassword(user.Password));
                 _dbContextSS.players.Add(newuser);

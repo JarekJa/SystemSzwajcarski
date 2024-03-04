@@ -39,6 +39,14 @@ namespace SystemSzwajcarski.Models.Relation
                 RankingPlayer = relationOP.Player.Ranking;
             }
         }
+        public RelationTP(Tournament tournament,Player player)
+        {
+            Tournament = tournament;
+            TournamentId = tournament.idTournament;
+            Player = player;
+            PlayerId = player.idUser;
+            RankingPlayer = player.Ranking;
+        }
     }
 
 
