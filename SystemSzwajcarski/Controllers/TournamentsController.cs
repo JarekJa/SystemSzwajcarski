@@ -164,6 +164,20 @@ namespace SystemSzwajcarski.Controllers
             _tournamentsS.AddTournamentToPlayer(player,id);
             return RedirectToAction("GetNoMyTournaments", "Tournaments");
         }
+        public IActionResult QuitTournament(int id)
+        {
+            string token = HttpContext.Session.GetString("Token");
+            if (!_accountS.ConfirmUser(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            if (_accountS.UserRole(token) != "Gracz")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            _tournamentsS.QuitTournament(id);
+            return RedirectToAction("GetMyTournaments", "Tournaments");
+        }
         public IActionResult DeletePlayertoTournament(PlayerstoAdd playerstoAdd)
         {
             string token = HttpContext.Session.GetString("Token");

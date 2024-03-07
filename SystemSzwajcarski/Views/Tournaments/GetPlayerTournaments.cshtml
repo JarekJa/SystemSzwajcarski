@@ -14,6 +14,10 @@
         }
         <span>Dostępnoś: </span> @relation.Tournament.Access
         <span>Status: </span> @relation.Tournament.Status
+        @if (relation.Tournament.Status.ToString() == "tworzony")
+        {
+            <a href="@Url.Action("QuitTournament", "Tournaments", new { Id = relation.idRelation })">Zrezygnuj</a>
+        }
     </li>
     }
 </ul>

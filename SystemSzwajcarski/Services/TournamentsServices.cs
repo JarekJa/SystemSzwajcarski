@@ -185,5 +185,13 @@ namespace SystemSzwajcarski.Services
             return _dbContextSS.SaveChanges() > 0;
         }
 
+        public bool QuitTournament(int id)
+        {
+            RelationTP relationTP = _dbContextSS.RelationTP.Include(sc=>sc.Tournament).FirstOrDefault(sc=>sc.idRelation==id);
+            relationTP.Tournament.NumberPlayers--;
+            _dbContextSS.RelationTP.Remove(relationTP);
+            return _dbContextSS.SaveChanges() > 0;
+        }
+
     }
 }
