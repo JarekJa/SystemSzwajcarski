@@ -60,7 +60,7 @@ namespace SystemSzwajcarski.Services
         }
         public RelationOP GetRelationOP(Organizer organizer, int id)
         {
-            _dbContextSS.Entry(organizer).Collection(sc => sc.Players).Query().Where(x => x.idRelation == 1).Include(sc => sc.Player).Load();
+            _dbContextSS.Entry(organizer).Collection(sc => sc.Players).Query().Where(x => x.idRelation == id).Include(sc => sc.Player).Load();
             return organizer.Players.FirstOrDefault();
         }
         public List<PlayerGet> GetPlayers(Organizer organizer)

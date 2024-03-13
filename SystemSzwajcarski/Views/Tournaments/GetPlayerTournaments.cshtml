@@ -18,6 +18,10 @@
         {
             <a href="@Url.Action("QuitTournament", "Tournaments", new { Id = relation.idRelation })">Zrezygnuj</a>
         }
+        @if ((relation.Tournament.Status.ToString() == "trwający"))
+        {
+            <a href="@Url.Action("ViewGamesPlayer", "Games", new { Id = relation.Tournament.idTournament })">Podgląd</a>
+        }
     </li>
     }
 </ul>

@@ -1,0 +1,27 @@
+﻿
+@model SystemSzwajcarski.Models.Games.TournamentResult
+@using SystemSzwajcarski.Models.Games
+<h1>Wyniki turnieju</h1>
+
+@using (Html.BeginForm("ChangeResultOrganizer", "Games", FormMethod.Post))
+{
+    <span>Nazwa: </span>@Model.Name
+    <span>Obecna runda: </span>@Model.CurrentRound
+    <span>Maksymalna liczba rund: </span>@Model.MaxRound
+    @Html.HiddenFor(x => x.idTournament)
+    <ul>
+        @for (int i = 0; i < Model.gameResults.Count; i++)
+        {
+        <li>
+            @Html.HiddenFor(x => x.gameResults[i].id)
+            <span>Gracz białymi: </span>@Model.gameResults[i].WhiteName<span> </span>@Model.gameResults[i].WhiteLastName
+            <span>Gracz czarnymi: </span>@Model.gameResults[i].BlackName<span> </span>@Model.gameResults[i].BlackLastName
+            <span>Wynik: </span>
+            <select asp-for="gameResults[i].Result"
+                    asp-items="Html.GetEnumSelectList<TypeResult>()">
+            </select>
+        </li>
+        }
+    </ul>
+    <button type="submit">Zapisz wyniki</button>
+}

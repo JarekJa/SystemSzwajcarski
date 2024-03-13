@@ -18,7 +18,7 @@ namespace SystemSzwajcarski.Models.Relation
         public int PlayerId { get; set; }
         public int TournamentId { get; set; }
         public List<Game> Games { get; set; } = new List<Game>();
-        public int Black { get; set; } = 0;
+        public int Color { get; set; } = 0;
         public RelationTP()
         {
                 

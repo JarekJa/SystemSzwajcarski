@@ -26,13 +26,13 @@ namespace SystemSzwajcarski.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool?>("Color")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("OpponentId")
+                    b.Property<int?>("BlackPlayerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RelationId")
+                    b.Property<bool>("Bye")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("RelationTPidRelation")
                         .HasColumnType("int");
 
                     b.Property<int>("Result")
@@ -41,16 +41,26 @@ namespace SystemSzwajcarski.Migrations
                     b.Property<int>("Round")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TournamentId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("TournamentidTournament")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WhitePlayerId")
                         .HasColumnType("int");
 
                     b.HasKey("idGame");
 
-                    b.HasIndex("OpponentId");
+                    b.HasIndex("BlackPlayerId");
 
-                    b.HasIndex("RelationId");
+                    b.HasIndex("RelationTPidRelation");
+
+                    b.HasIndex("TournamentId");
 
                     b.HasIndex("TournamentidTournament");
+
+                    b.HasIndex("WhitePlayerId");
 
                     b.ToTable("games");
                 });
@@ -163,7 +173,7 @@ namespace SystemSzwajcarski.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Black")
+                    b.Property<int>("Color")
                         .HasColumnType("int");
 
                     b.Property<int>("PlayerId")
@@ -214,23 +224,31 @@ namespace SystemSzwajcarski.Migrations
 
             modelBuilder.Entity("SystemSzwajcarski.Models.Main.Game", b =>
                 {
-                    b.HasOne("SystemSzwajcarski.Models.Player", "Opponent")
+                    b.HasOne("SystemSzwajcarski.Models.Relation.RelationTP", "BlackPlayer")
                         .WithMany()
-                        .HasForeignKey("OpponentId");
+                        .HasForeignKey("BlackPlayerId");
 
-                    b.HasOne("SystemSzwajcarski.Models.Relation.RelationTP", "Relation")
+                    b.HasOne("SystemSzwajcarski.Models.Relation.RelationTP", null)
                         .WithMany("Games")
-                        .HasForeignKey("RelationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RelationTPidRelation");
+
+                    b.HasOne("SystemSzwajcarski.Models.Main.Tournament", "Tournament")
+                        .WithMany()
+                        .HasForeignKey("TournamentId");
 
                     b.HasOne("SystemSzwajcarski.Models.Main.Tournament", null)
                         .WithMany("Games")
                         .HasForeignKey("TournamentidTournament");
 
-                    b.Navigation("Opponent");
+                    b.HasOne("SystemSzwajcarski.Models.Relation.RelationTP", "WhitePlayer")
+                        .WithMany()
+                        .HasForeignKey("WhitePlayerId");
 
-                    b.Navigation("Relation");
+                    b.Navigation("BlackPlayer");
+
+                    b.Navigation("Tournament");
+
+                    b.Navigation("WhitePlayer");
                 });
 
             modelBuilder.Entity("SystemSzwajcarski.Models.Main.Tournament", b =>

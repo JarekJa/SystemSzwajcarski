@@ -24,5 +24,6 @@ namespace SystemSzwajcarski.Services.Interfaces
         public Tournament GetTournament(int id);
         public bool ModifyTournament(TournamentAdd tournamentAdd);
         public bool QuitTournament(int id);
+        public bool StartTournament(int id);
     }
 }

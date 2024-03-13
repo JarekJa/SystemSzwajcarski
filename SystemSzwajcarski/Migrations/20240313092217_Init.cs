@@ -2,7 +2,7 @@
 
 namespace SystemSzwajcarski.Migrations
 {
-    public partial class AddTournament : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -54,7 +54,9 @@ namespace SystemSzwajcarski.Migrations
                     Status = table.Column<int>(type: "int", nullable: false),
                     Access = table.Column<int>(type: "int", nullable: false),
                     CurrentRound = table.Column<int>(type: "int", nullable: false),
-                    MaxRound = table.Column<int>(type: "int", nullable: false)
+                    NumberPlayers = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MaxRound = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -104,7 +106,7 @@ namespace SystemSzwajcarski.Migrations
                     RankingPlayer = table.Column<int>(type: "int", nullable: false),
                     PlayerId = table.Column<int>(type: "int", nullable: false),
                     TournamentId = table.Column<int>(type: "int", nullable: false),
-                    Black = table.Column<int>(type: "int", nullable: false)
+                    Color = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -130,26 +132,40 @@ namespace SystemSzwajcarski.Migrations
                     idGame = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Round = table.Column<int>(type: "int", nullable: false),
-                    RelationId = table.Column<int>(type: "int", nullable: false),
-                    OpponentId = table.Column<int>(type: "int", nullable: true),
+                    Bye = table.Column<bool>(type: "bit", nullable: false),
+                    TournamentId = table.Column<int>(type: "int", nullable: true),
+                    BlackPlayerId = table.Column<int>(type: "int", nullable: true),
+                    WhitePlayerId = table.Column<int>(type: "int", nullable: true),
                     Result = table.Column<int>(type: "int", nullable: false),
-                    Color = table.Column<bool>(type: "bit", nullable: true),
+                    RelationTPidRelation = table.Column<int>(type: "int", nullable: true),
                     TournamentidTournament = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_games", x => x.idGame);
                     table.ForeignKey(
-                        name: "FK_games_players_OpponentId",
-                        column: x => x.OpponentId,
-                        principalTable: "players",
-                        principalColumn: "idUser",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_games_RelationTP_RelationId",
-                        column: x => x.RelationId,
+                        name: "FK_games_RelationTP_BlackPlayerId",
+                        column: x => x.BlackPlayerId,
                         principalTable: "RelationTP",
                         principalColumn: "idRelation",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_games_RelationTP_RelationTPidRelation",
+                        column: x => x.RelationTPidRelation,
+                        principalTable: "RelationTP",
+                        principalColumn: "idRelation",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_games_RelationTP_WhitePlayerId",
+                        column: x => x.WhitePlayerId,
+                        principalTable: "RelationTP",
+                        principalColumn: "idRelation",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_games_Tournaments_TournamentId",
+                        column: x => x.TournamentId,
+                        principalTable: "Tournaments",
+                        principalColumn: "idTournament",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_games_Tournaments_TournamentidTournament",
@@ -160,19 +176,29 @@ namespace SystemSzwajcarski.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_games_OpponentId",
+                name: "IX_games_BlackPlayerId",
                 table: "games",
-                column: "OpponentId");
+                column: "BlackPlayerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_games_RelationId",
+                name: "IX_games_RelationTPidRelation",
                 table: "games",
-                column: "RelationId");
+                column: "RelationTPidRelation");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_games_TournamentId",
+                table: "games",
+                column: "TournamentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_games_TournamentidTournament",
                 table: "games",
                 column: "TournamentidTournament");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_games_WhitePlayerId",
+                table: "games",
+                column: "WhitePlayerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RelationOP_OrganizerId",

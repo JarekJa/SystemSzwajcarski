@@ -14,9 +14,11 @@ namespace SystemSzwajcarski.Services
     public class TournamentsServices: ITournamentsServices
     {
         private readonly DbContextSS _dbContextSS;
-        public TournamentsServices(DbContextSS dbContextSS)
+        private readonly IGamesServices _gamesServices;
+        public TournamentsServices(DbContextSS dbContextSS, IGamesServices gamesServices)
         {
             _dbContextSS = dbContextSS;
+            _gamesServices = gamesServices;
         }
         public bool AddTournament(Organizer organizer, TournamentAdd tournamentAdd)
         {
@@ -184,7 +186,32 @@ namespace SystemSzwajcarski.Services
             _dbContextSS.Tournaments.Remove(tournament);
             return _dbContextSS.SaveChanges() > 0;
         }
-
+        public bool StartTournament( int id)
+        {
+            Tournament tournament = _dbContextSS.Tournaments.Include(sc=>sc.Players).FirstOrDefault(sc=>sc.idTournament==id);
+            int mround = (int) Math.Ceiling(Math.Log2(tournament.NumberPlayers));
+            tournament.Status = TournamentStatus.trwający;
+            if(tournament.MaxRound!= null)
+            {
+               if(tournament.MaxRound<1)
+                {
+                    tournament.MaxRound = mround;
+                }
+               if(tournament.MaxRound>tournament.NumberPlayers-1)
+                {
+                    tournament.MaxRound = tournament.NumberPlayers - 1;
+                }           
+            }
+            else
+            {
+                tournament.MaxRound = mround;
+            }
+            if (!_gamesServices.FirstRound(tournament))
+            {
+                return false;
+            }
+            return _dbContextSS.SaveChanges() > 0;
+        }
         public bool QuitTournament(int id)
         {
             RelationTP relationTP = _dbContextSS.RelationTP.Include(sc=>sc.Tournament).FirstOrDefault(sc=>sc.idRelation==id);

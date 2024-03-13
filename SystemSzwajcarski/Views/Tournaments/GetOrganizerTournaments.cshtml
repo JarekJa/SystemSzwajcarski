@@ -15,10 +15,15 @@
         <span>Status: </span> @tournament.Status
         @if (tournament.Status.ToString() == "tworzony")
         {
-        <a href="@Url.Action("ViewPlayertoTournament", "Tournaments", new { Id = tournament.idTournament })">Dodaj Zawodników</a>
-        <a href="@Url.Action("ViewPlayer", "Tournaments", new { Id = tournament.idTournament })">Zawodnicy</a>
-        <a href="@Url.Action("DeleteTournament", "Tournaments", new { Id = tournament.idTournament })">Usuń</a>
-        <a href="@Url.Action("Viewdata", "Tournaments", new { Id = tournament.idTournament })">Modyfikuj</a>
+            <a href="@Url.Action("ViewPlayertoTournament", "Tournaments", new { Id = tournament.idTournament })">Dodaj Zawodników</a>
+            <a href="@Url.Action("ViewPlayer", "Tournaments", new { Id = tournament.idTournament })">Zawodnicy</a>
+            <a href="@Url.Action("DeleteTournament", "Tournaments", new { Id = tournament.idTournament })">Usuń</a>
+            <a href="@Url.Action("Viewdata", "Tournaments", new { Id = tournament.idTournament })">Modyfikuj</a>
+            <a href="@Url.Action("StartTournament", "Tournaments", new { Id = tournament.idTournament })">Rozpocznij</a>
+        }
+        @if((tournament.Status.ToString() == "trwający"))
+        {
+        <a href="@Url.Action("ViewGamesOrganizer", "Games", new { Id = tournament.idTournament })">Podgląd</a>
         }
     </li>
     }
