@@ -1,0 +1,13 @@
+﻿@model SystemSzwajcarski.Models.UserRegister
+<h1>Zmiana danych</h1>
+@using (Html.BeginForm("ChangeData", "Account", FormMethod.Post))
+{
+    @Html.ValidationSummary();
+    @Html.HiddenFor(x => x.Password)
+    <span>Imie: </span>@Html.TextBoxFor(x => x.Name)
+    <span>Nazwisko: </span>@Html.TextBoxFor(x => x.LastName)
+    <span>Login: </span>@Html.TextBoxFor(x => x.Login)
+    <span>Email: </span>@Html.TextBoxFor(x => x.Email)
+    <button type="submit">Modyfikuj</button>
+}
+

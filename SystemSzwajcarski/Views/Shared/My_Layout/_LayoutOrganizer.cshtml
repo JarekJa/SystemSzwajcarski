@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html lang="pl">
+
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SystemSzwajcarski</title>
+    <link rel="stylesheet" href="~/css/css/site.css" />
+</head>
+
+
+<body>
+    <header>
+        <div>
+            <nav class="baner">
+                <a class="home" asp-area="" asp-controller="Home" asp-action="Index">System Szwajcarski</a>
+
+                <div class="menu">
+                    <ul>
+                        <li>
+                            <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li>
+                            <div class="dropdown">
+                                <a asp-area="" asp-controller="Tournaments" asp-action="GetMyTournaments">Moje turnieje</a>
+                                <ul>
+                                    <li>
+                                        <a asp-area="" asp-controller="Tournaments" asp-action="AddTournament">Utwórz turniej</a>
+                                    </li>
+                                    <li>
+                                        <a asp-area="" asp-controller="Tournaments" asp-action="GetMyTournaments">Moje turnieje</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="dropdown">
+                                <a asp-area="" asp-controller="Players" asp-action="GetMyPlayers">Moj zawodnicy</a>
+                                <ul>
+                                    <li>
+                                        <a asp-area="" asp-controller="Players" asp-action="AddPlayer">Dodaj zawodnika</a>
+                                    </li>
+                                    <li>
+                                        <a asp-area="" asp-controller="Players" asp-action="GetMyPlayers">Moj zawodnicy</a>
+                                    </li>
+                                    <li>
+                                        <a asp-area="" asp-controller="Players" asp-action="GetAllPlayers">Zawodnicy</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="dropdown">
+                                <a asp-area="" asp-controller="Account" asp-action="MyAccount">Moje konto</a>
+                                <ul>
+                                    <li>
+                                        <a asp-area="" asp-controller="Account" asp-action="MyAccount">Moje konto</a>
+                                    </li>
+                                    <li>
+                                        <a asp-area="" asp-controller="Account" asp-action="Logout">Wyloguj</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2023 - SystemSzwajcarski - <a asp-area="" asp-controller="Home" asp-action="Privacy">Polityka prywatności</a>
+        </div>
+    </footer>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+
+</body>
+
+
+
+</html>
+

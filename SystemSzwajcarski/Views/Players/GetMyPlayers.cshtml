@@ -1,0 +1,13 @@
+﻿@model IEnumerable<SystemSzwajcarski.Models.RelationOP>
+<h1>Lista zawodników</h1>
+<ul>
+    @foreach (var player in Model)
+    {
+    <li>
+
+        @player.Player.Name - @player.Player.LastName - @player.Ranking
+        <a href="@Url.Action("Details","Players", new {Id=player.idRelation})">Szczagóły</a>
+
+    </li>
+    }
+</ul>

@@ -1,0 +1,28 @@
+﻿@model IEnumerable<SystemSzwajcarski.Models.Relation.RelationTP>
+<h1>Lista turniejów</h1>
+<ul>
+    @foreach (var relation in Model)
+    {
+    <li>
+        <span>Imie organizatora: </span>  @relation.Tournament.Organizer.Name
+        <span>Nazwisko organizatora: </span> @relation.Tournament.Organizer.LastName
+        <span>Nazwa: </span>  @relation.Tournament.Name
+        <span>Liczba zawodnikow: </span> @relation.Tournament.NumberPlayers
+        @if (@relation.Tournament.MaxRound != null)
+        {
+            <span>Liczba rund: </span> @relation.Tournament.MaxRound
+        }
+        <span>Dostępnoś: </span> @relation.Tournament.Access
+        <span>Status: </span> @relation.Tournament.Status
+        @if (relation.Tournament.Status.ToString() == "tworzony")
+        {
+            <a href="@Url.Action("QuitTournament", "Tournaments", new { Id = relation.idRelation })">Zrezygnuj</a>
+        }
+        @if ((relation.Tournament.Status.ToString() == "trwający"))
+        {
+            <a href="@Url.Action("ViewGamesPlayer", "Games", new { Id = relation.Tournament.idTournament })">Podgląd</a>
+        }
+    </li>
+    }
+</ul>
+

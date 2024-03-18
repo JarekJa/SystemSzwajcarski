@@ -1,3 +1,25 @@
-﻿@{
-    Layout = "_Layout";
+﻿
+@using Microsoft.AspNetCore.Http;
+@using System.IdentityModel.Tokens.Jwt;
+@using System.Security.Claims;
+
+@{
+    string layout = "~/Views/Shared/My_Layout/_LayoutUser.cshtml";
+    string token = Context.Session.GetString("Token");
+    if (token != null)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var tokend = tokenHandler.ReadJwtToken(token);
+        List<Claim> clams = tokend.Claims.ToList();
+        string role = clams[2].Value;
+        if (role == "Gracz")
+        {
+            layout = "~/Views/Shared/My_Layout/_LayoutPlayer.cshtml";
+        }
+        if (role == "Organizator")
+        {
+            layout = "~/Views/Shared/My_Layout/_LayoutOrganizer.cshtml";
+        }
+    }
+    Layout = layout;
 }

@@ -16,14 +16,12 @@ namespace SystemSzwajcarski.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ITokenService _tokenService;
-        private readonly IConfiguration _config;
+        private readonly IAccountServices _accountS;
 
-        public HomeController(ILogger<HomeController> logger, ITokenService tokenService, IConfiguration config)
+        public HomeController(ILogger<HomeController> logger, IAccountServices accountServices)
         {
             _logger = logger;
-            _tokenService = tokenService;
-            _config = config;
+            _accountS = accountServices;
         }
 
  
@@ -36,17 +34,14 @@ namespace SystemSzwajcarski.Controllers
         public IActionResult Test()
         {
             string token = HttpContext.Session.GetString("Token");
-            if (token == null)
+            if (!_accountS.ConfirmUser(token))
             {
                 return RedirectToAction("Index", "Home");
             }
-            if (!_tokenService.ValidateToken(_config["Jwt:Key"].ToString(), _config["Jwt:Issuer"].ToString(), token))
+            if(_accountS.UserRole(token) != "Organizator")
             {
                 return RedirectToAction("Index", "Home");
-            }
-            if(_tokenService.RoleTotken(token)!= "Organizer")
-            {
-                return RedirectToAction("Index", "Home");
+
             }
             return View();
         }

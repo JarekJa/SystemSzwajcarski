@@ -1,4 +1,14 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
+﻿function Addaplayer(i) {
+    var button = document.getElementById("tournamentbutton/" + i);
+    var hidden = document.getElementById("ToAdd_"+i+"_");
+    if (button.innerHTML =="Dodaj")
+    {
+        button.innerHTML = "Usuń";
+        hidden.value = "True";
+    }
+    else
+    {
+        hidden.value = "False";
+        button.innerHTML = "Dodaj";
+    }
+}

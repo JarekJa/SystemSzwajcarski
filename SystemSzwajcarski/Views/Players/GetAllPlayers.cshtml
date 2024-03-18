@@ -1,0 +1,17 @@
+﻿@model IEnumerable<SystemSzwajcarski.Models.Players.PlayerGet>
+<h1>Lista zawodników</h1>
+<ul>
+    @foreach (var player in Model)
+    {
+    <li>
+
+        @player.Player.Name - @player.Player.LastName
+        @if (!player.PlayerHasOrganizer)
+        {
+            <a href="@Url.Action("Addtoorganizer","Players", new {Id=player.Player.idUser})">Dodaj</a>
+        }
+
+    </li>
+    }
+</ul>
+

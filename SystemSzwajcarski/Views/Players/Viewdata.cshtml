@@ -1,0 +1,16 @@
+﻿@model SystemSzwajcarski.Models.PlayerAdd
+<h1>Modyfikacja zawodnika</h1>
+
+@using (Html.BeginForm("ChangeData", "Players", FormMethod.Post))
+{
+    @Html.ValidationSummary();
+    @Html.HiddenFor(x => x.Id)
+    <span>Imie: </span>@Html.TextBoxFor(x => x.Name)
+    <span>Nazwisko: </span>@Html.TextBoxFor(x => x.LastName)
+    <span>Ranking: </span>@Html.TextBoxFor(x => x.Ranking)
+    <span>Login: </span>@Html.TextBoxFor(x => x.Login)
+    <span>Email: </span>@Html.TextBoxFor(x => x.Email)
+    <span>Hasło: </span>@Html.PasswordFor(x => x.Password)
+    <button type="submit">Modyfikuj</button>
+}
+

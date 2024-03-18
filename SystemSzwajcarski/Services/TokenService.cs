@@ -15,18 +15,6 @@ namespace SystemSzwajcarski.Services
     {
         private const double EXPIRY_DURATION_MINUTES = 30;
 
-        private string role(User user)
-        {
-            if (user.Organizer)
-            {
-                return "Organizer";
-            }
-            if (user.Player)
-            {
-                return "Player";
-            }
-            return "";
-        }
         public string BuildToken(string key, string issuer, User user)
         {
 
@@ -34,7 +22,8 @@ namespace SystemSzwajcarski.Services
             {
             new Claim(ClaimTypes.Name, user.Name),
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, role(user)),
+            new Claim(ClaimTypes.Role, user.Roleuser.ToString()),
+            new Claim(ClaimTypes.Actor,user.Login),
             new Claim(ClaimTypes.NameIdentifier,
             Guid.NewGuid().ToString())
             };
@@ -68,15 +57,6 @@ namespace SystemSzwajcarski.Services
                 return false;
             }
             return true;
-        }
-
-        public string RoleTotken(string token)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var tokend = tokenHandler.ReadJwtToken(token);
-            List<Claim> clams = tokend.Claims.ToList();
-            string role = clams[2].Value;
-            return role;
         }
     }
 }

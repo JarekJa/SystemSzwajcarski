@@ -1,0 +1,11 @@
+﻿@model SystemSzwajcarski.Models.RelationOP
+<h1>Szczegóły zawodnika</h1>
+<p>Imie: @Model.Player.Name</p>
+<p>Nazwisko :@Model.Player.LastName</p>
+<p>Login: @Model.Player.Login</p>
+<p>Email: @Model.Player.Email</p>
+<p>Ranking:  @Model.Ranking</p>
+<a href="@Url.Action("Viewdata","Players", new {Id=Model.idRelation})">Modyfikuj</a>
+<a href="@Url.Action("DelatePlayer","Players", new {Id=Model.idRelation})">Usuń</a>
+
+

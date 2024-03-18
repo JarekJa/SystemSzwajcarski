@@ -1,15 +1,23 @@
-﻿@model SystemSzwajcarski.Models.User
+﻿@model SystemSzwajcarski.Models.UserRegister
 <h1>Rejstracja</h1>
 
 @using (Html.BeginForm("Register", "Account", FormMethod.Post))
 {
     @Html.ValidationSummary();
+    @using SystemSzwajcarski.Models.Account
     <span>Imie: </span>@Html.TextBoxFor(x => x.Name)
     <span>Nazwisko: </span>@Html.TextBoxFor(x => x.LastName)
     <span>Login: </span>@Html.TextBoxFor(x => x.Login)
     <span>Email: </span>@Html.TextBoxFor(x => x.Email)
-    <span>Organizator: </span>@Html.CheckBoxFor(x => x.Organizer,true)
-    <span>Gracz: </span>@Html.CheckBoxFor(x => x.Player,true)
+
+    <span>Rola: </span>
+    <select asp-for="Roleuser"
+            asp-items="Html.GetEnumSelectList<Role>()">
+        <option>Wybierz role</option>
+    </select>
+    <span asp-validation-for="Roleuser"></span>
+
+
     <span>Hasło: </span>@Html.PasswordFor(x => x.Password)
     <button type="submit">Rejstracja</button>
 }
