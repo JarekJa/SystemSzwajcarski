@@ -36,10 +36,100 @@ namespace SystemSzwajcarski.Services
             {
                 Game game = new Game(relationTPs[tournament.NumberPlayers-1],tournament);
                 relationTPs[tournament.NumberPlayers - 1].Games.Add(game);
+                relationTPs[tournament.NumberPlayers - 1].Bye = true;
                 tournament.Games.Add(game);
             }
 
             return _dbContextSS.SaveChanges() > 0;
+        }
+        private bool CanPlay(RelationTP player1, RelationTP player2)
+        {
+            bool canPlay = true;
+            if(player1.idRelation==player2.idRelation)
+            {
+                canPlay = false;
+            }
+            if(player1.Color+player2.Color>=4|| player1.Color + player2.Color <= -4)
+            {
+                canPlay = false;
+            }
+            else
+            {
+                foreach(Game game in player1.Games)
+                {
+                    if(game.BlackPlayerId==player2.idRelation|| game.WhitePlayerId == player2.idRelation)
+                    {
+                        canPlay = false;
+                        break;
+                    }
+                }
+            }
+            return canPlay;
+        }
+
+        private void DutchSystem(Tournament tournament, List<RelationTP> relationTPs)
+        {
+            int j,i;
+            int numberPlayer = tournament.NumberPlayers;
+            bool playerfound;
+            RelationTP relation1;
+            RelationTP relation2;
+            while (numberPlayer!=0)
+            {
+                i= 0;
+                j = i + numberPlayer / 2;
+                playerfound = false;
+                while (!playerfound)
+                {
+                    if (CanPlay(relationTPs[i], relationTPs[j]))
+                    {
+                        Game game = new Game(relationTPs[j], relationTPs[i], tournament);
+                        relation1 = relationTPs[j];
+                        relation2 = relationTPs[i];
+                        relationTPs[j].Games.Add(game);
+                        relationTPs[j].Color--;
+                        relationTPs[i].Games.Add(game);
+                        relationTPs[i].Color++;
+                        tournament.Games.Add(game);
+                        relationTPs.Remove(relation1);
+                        relationTPs.Remove(relation2);
+                        numberPlayer -= 2;
+                        playerfound = true;
+                    }
+                    if(j>=numberPlayer/2)
+                    {
+                        j++;
+                    }
+                    if(j==numberPlayer)
+                    {
+                        j = numberPlayer / 2 - 1;
+                    }
+                    if(j< numberPlayer / 2-1)
+                    {
+                        j--;
+                    }
+                    if(j==-1)
+                    {
+                        relation2 = relationTPs[i];
+                        Game game = new Game(relationTPs[i], tournament);
+                        relationTPs[i].Games.Add(game);
+                        relationTPs[i].Bye = true;
+                        tournament.Games.Add(game);
+                        relationTPs.Remove(relation2);
+                        numberPlayer--;
+                        playerfound = true;
+                    }
+                }
+            }
+        }
+        public bool GenerateRound(Tournament tournament)
+        {
+            tournament.CurrentRound++;
+            List<RelationTP> relationTPs = tournament.Players.OrderByDescending(sc => sc.RankingTournament).ThenByDescending(sc => sc.RankingPlayer).ToList();
+            DutchSystem(tournament, relationTPs);
+
+            // return _dbContextSS.SaveChanges() > 0;
+            return true;
         }
         public TournamentResult GameResultsOrganizer(int id)
         {
@@ -67,9 +157,8 @@ namespace SystemSzwajcarski.Services
             }
             return gameResults;
         }
-        public bool ModifyResult(TournamentResult tournamentResult)
-        {
-            Tournament tournament = _dbContextSS.Tournaments.Include(s => s.Games).FirstOrDefault(sc=>sc.idTournament==tournamentResult.idTournament);
+        public bool ModifyResult(Tournament tournament,TournamentResult tournamentResult)
+        { 
             foreach(GameResult gameResult in tournamentResult.gameResults)
             {
                 for (int i=0;i<tournament.Games.Count;i++)
@@ -84,5 +173,55 @@ namespace SystemSzwajcarski.Services
             return _dbContextSS.SaveChanges() >= 0;
         }
 
+        public bool GameshaveResults(Tournament tournament)
+        {
+            bool haveResult = true;
+            List<Game> games = tournament.Games.Where(sc=>sc.Round==tournament.CurrentRound).ToList();
+            foreach(Game game in games)
+            {
+                if(!game.Bye)
+                {
+                   if(game.Result==TypeResult.none)
+                    {
+                        haveResult = false;
+                    }
+                }
+            }
+            return haveResult;
+        }
+        public bool ConfirmResult(Tournament tournament)
+        {
+            foreach(Game game in tournament.Games)
+            {
+                if(game.Bye)
+                {
+                    game.WhitePlayer.RankingTournament += 2;
+                }
+                else
+                {
+                    if(game.Result==TypeResult.white)
+                    {
+                        game.WhitePlayer.RankingTournament += 2;
+                    }
+                    else if(game.Result == TypeResult.black)
+                    {
+                        game.BlackPlayer.RankingTournament += 2;
+                    }
+                    else
+                    {
+                        game.WhitePlayer.RankingTournament += 1;
+                        game.BlackPlayer.RankingTournament += 1;
+                    }
+                }
+            }
+            // return _dbContextSS.SaveChanges() >= 0;
+            return true;
+        }
+        public Tournament GetTournament(int id)
+        {
+        Tournament tournament= _dbContextSS.Tournaments.Include(sc => sc.Games).ThenInclude(sc => sc.WhitePlayer).Include(sc => sc.Games).ThenInclude(sc => sc.BlackPlayer).Include(sc=>sc.Players).ThenInclude(sc=>sc.Games).FirstOrDefault(sc => sc.idTournament == id);
+          
+            return tournament;
+        }
     }
 }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SystemSzwajcarski.Models;
 using SystemSzwajcarski.Models.Games;
+using SystemSzwajcarski.Models.Main;
 using SystemSzwajcarski.Services.Interfaces;
 
 namespace SystemSzwajcarski.Controllers
@@ -50,7 +51,7 @@ namespace SystemSzwajcarski.Controllers
         }
 
         [HttpPost]
-        public IActionResult ChangeResultOrganizer(TournamentResult tournamentResult)
+        public IActionResult ChangeResultOrganizer(TournamentResult tournamentResult, string Command)
         {
             string token = HttpContext.Session.GetString("Token");
             if (!_accountS.ConfirmUser(token))
@@ -59,14 +60,30 @@ namespace SystemSzwajcarski.Controllers
             }
             if (_accountS.UserRole(token) == "Organizator")
             {
-                if (!_gamesS.ModifyResult(tournamentResult))
+                Tournament tournament = _gamesS.GetTournament(tournamentResult.idTournament); 
+                if (!_gamesS.ModifyResult(tournament,tournamentResult))
                 {
                     return View("ViewGamesOrganizer", tournamentResult);
+                }
+                if (Command == "Confirm")
+                {
+                    if(_gamesS.GameshaveResults(tournament))
+                    {
+                        if (_gamesS.ConfirmResult(tournament))
+                        {
+                            if (!_gamesS.GenerateRound(tournament))
+                            {
+                                return View("ViewGamesPlayer", tournamentResult);
+                            }
+                        }
+                    }
                 }
             }
             if (_accountS.UserRole(token) == "Gracz")
             {
-                if (!_gamesS.ModifyResult(tournamentResult))
+                Tournament tournament = _gamesS.GetTournament(tournamentResult.idTournament);
+
+                if (!_gamesS.ModifyResult(tournament,tournamentResult))
                 {
                     return View("ViewGamesPlayer", tournamentResult);
                 }

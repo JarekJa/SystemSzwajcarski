@@ -13,6 +13,10 @@ namespace SystemSzwajcarski.Services.Interfaces
         public bool FirstRound(Tournament tournament);
         public TournamentResult GameResultsOrganizer(int i);
         public TournamentResult GameResultsPlayer(Player player,int i);
-        public bool ModifyResult(TournamentResult tournamentResult);
+        public bool ModifyResult(Tournament tournament, TournamentResult tournamentResult);
+        public Tournament GetTournament(int id);
+        public bool GameshaveResults(Tournament tournament);
+        public bool GenerateRound(Tournament tournament);
+        public bool ConfirmResult(Tournament tournament);
     }
 }
