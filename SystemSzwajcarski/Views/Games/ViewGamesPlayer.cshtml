@@ -10,12 +10,20 @@
     <span>Maksymalna liczba rund: </span>@Model.MaxRound
     @Html.HiddenFor(x => x.idTournament)
     @Html.HiddenFor(x => x.gameResults[0].id)
-    <span>Gracz białymi: </span>@Model.gameResults[0].WhiteName<span> </span>@Model.gameResults[0].WhiteLastName
-    <span>Gracz czarnymi: </span>@Model.gameResults[0].BlackName<span> </span>@Model.gameResults[0].BlackLastName
-    <span>Wynik: </span>
-    <select asp-for="gameResults[0].Result"
-            asp-items="Html.GetEnumSelectList<TypeResult>()">
-    </select>
-    <button type="submit">Zapisz wyniki</button>
+    @if (!@Model.gameResults[0].Bye)
+    {
+        <span>Gracz białymi: </span>@Model.gameResults[0].WhiteName<span> </span>@Model.gameResults[0].WhiteLastName
+        <span>Gracz czarnymi: </span>@Model.gameResults[0].BlackName<span> </span>@Model.gameResults[0].BlackLastName
+        <span>Wynik: </span>
+        <select asp-for="gameResults[0].Result"
+                asp-items="Html.GetEnumSelectList<TypeResult>()">
+        </select>
+    }
+    else
+    {
+        <span>Otrzymałeś wolny los</span>
+    }
+
+    <button type="submit" name="Command" value="Save">Zapisz wyniki</button>
 }
 

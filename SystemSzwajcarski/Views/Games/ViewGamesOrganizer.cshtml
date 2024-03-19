@@ -14,14 +14,22 @@
         {
         <li>
             @Html.HiddenFor(x => x.gameResults[i].id)
-            <span>Gracz białymi: </span>@Model.gameResults[i].WhiteName<span> </span>@Model.gameResults[i].WhiteLastName
-            <span>Gracz czarnymi: </span>@Model.gameResults[i].BlackName<span> </span>@Model.gameResults[i].BlackLastName
-            <span>Wynik: </span>
-            <select asp-for="gameResults[i].Result"
-                    asp-items="Html.GetEnumSelectList<TypeResult>()">
-            </select>
+            @if (!@Model.gameResults[i].Bye)
+            {
+                <span>Gracz białymi: </span>@Model.gameResults[i].WhiteName<span> </span>@Model.gameResults[i].WhiteLastName
+                <span>Gracz czarnymi: </span>@Model.gameResults[i].BlackName<span> </span>@Model.gameResults[i].BlackLastName
+                <span>Wynik: </span>
+                <select asp-for="gameResults[i].Result"
+                        asp-items="Html.GetEnumSelectList<TypeResult>()">
+                </select>
+            }
+            else
+            {
+              <span>Gracz: </span>@Model.gameResults[i].WhiteName<span> </span>@Model.gameResults[i].WhiteLastName<span> otrzymał wolny los</span>
+            }
         </li>
         }
     </ul>
-    <button type="submit">Zapisz wyniki</button>
+    <button type="submit" name="Command" value="Save">Zapisz wyniki</button>
+    <button type="submit" name="Command" value="Confirm">Zapisz i zatwierdź</button>
 }

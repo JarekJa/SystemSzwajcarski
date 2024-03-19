@@ -12,6 +12,7 @@ namespace SystemSzwajcarski.Models.Games
         public string WhiteName { get; set; }
         public string WhiteLastName { get; set; }
 
+        public bool Bye { get; set; }
         public string BlackName { get; set; }
         public string BlackLastName { get; set; }
         public TypeResult Result { get; set; } = TypeResult.none;
@@ -23,6 +24,7 @@ namespace SystemSzwajcarski.Models.Games
             BlackLastName = games.BlackPlayer.Player.LastName;
             id = games.idGame;
             Result = games.Result;
+            Bye = games.Bye;
         }
         public GameResult()
         {
