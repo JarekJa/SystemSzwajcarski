@@ -22,6 +22,10 @@
         {
             <a href="@Url.Action("ViewGamesPlayer", "Games", new { Id = relation.Tournament.idTournament })">Podgląd</a>
         }
+        @if ((relation.Tournament.Status.ToString() == "zakończony"))
+        {
+            <a href="@Url.Action("ViewGamesOrganizer", "Games", new { Id = relation.Tournament.idTournament })">Podgląd</a>
+        }
     </li>
     }
 </ul>

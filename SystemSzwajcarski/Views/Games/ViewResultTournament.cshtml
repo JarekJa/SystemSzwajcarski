@@ -1,0 +1,19 @@
+﻿
+
+@model SystemSzwajcarski.Models.Games.TournamentResult
+<h1>Wyniki turnieju</h1>
+<span>Nazwa: </span>@Model.Name
+<span>Organizator: </span>@Model.OrganizerName<span> </span>@Model.OrganizerLastName
+<span>Ilość rund: </span>@Model.Round
+<span>Ilość graczy: </span>@Model.playerResults.Count
+<h1>Tabela wyników</h1>
+<ul>
+    @foreach (var player in Model.playerResults)
+    {
+        <li>
+            @player.Name- @player.LastName - @player.Result
+        </li>
+    }
+</ul>
+
+

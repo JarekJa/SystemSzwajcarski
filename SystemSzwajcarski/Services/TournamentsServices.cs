@@ -182,8 +182,17 @@ namespace SystemSzwajcarski.Services
         }
         public bool DeleteTournament(int id)
         {
-            Tournament tournament= _dbContextSS.Tournaments.Find(id);
-            _dbContextSS.Tournaments.Remove(tournament);
+            Tournament tournament= _dbContextSS.Tournaments.Include(sc=>sc.Games).FirstOrDefault(sc=>sc.idTournament==id);
+            if (tournament.Status==TournamentStatus.tworzony)
+            {
+                _dbContextSS.Tournaments.Remove(tournament);
+            }
+            else if(tournament.Status == TournamentStatus.zakończony)
+            {
+                List<Game> game = _dbContextSS.games.Where(sc => sc.TournamentId == tournament.idTournament).ToList();
+                _dbContextSS.games.RemoveRange(game);
+                _dbContextSS.Tournaments.Remove(tournament);
+            }
             return _dbContextSS.SaveChanges() > 0;
         }
         public bool StartTournament( int id)
@@ -211,6 +220,25 @@ namespace SystemSzwajcarski.Services
                 return false;
             }
             return _dbContextSS.SaveChanges() > 0;
+        }
+
+        public bool EndTournament(int id)
+        {
+            Tournament tournament = _dbContextSS.Tournaments.Include(sc=>sc.Games).FirstOrDefault(sc => sc.idTournament == id);
+            if(tournament.CurrentRound<=1)
+            {
+                List<Game> game = _dbContextSS.games.Where(sc => sc.TournamentId==tournament.idTournament).ToList();
+                tournament.Status = TournamentStatus.tworzony;
+                tournament.CurrentRound =0;
+                _dbContextSS.games.RemoveRange(game);
+                _dbContextSS.SaveChanges();
+                return false;
+            }
+            else
+            {
+                tournament.Status = TournamentStatus.zakończony;
+            }
+            return _dbContextSS.SaveChanges() >= 0;
         }
         public bool QuitTournament(int id)
         {

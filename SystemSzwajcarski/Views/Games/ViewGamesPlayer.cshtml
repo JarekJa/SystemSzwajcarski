@@ -1,11 +1,12 @@
 ﻿
-@model SystemSzwajcarski.Models.Games.TournamentResult
+@model SystemSzwajcarski.Models.Games.RoundResult
 @using SystemSzwajcarski.Models.Games
 <h1>Wyniki turnieju</h1>
 
 @using (Html.BeginForm("ChangeResultOrganizer", "Games", FormMethod.Post))
 {
     <span>Nazwa: </span>@Model.Name
+    <span>Organizator: </span>@Model.OrganizerName<span> </span>@Model.OrganizerLastName
     <span>Obecna runda: </span>@Model.CurrentRound
     <span>Maksymalna liczba rund: </span>@Model.MaxRound
     @Html.HiddenFor(x => x.idTournament)

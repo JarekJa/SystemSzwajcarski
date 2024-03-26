@@ -15,10 +15,12 @@ namespace SystemSzwajcarski.Controllers
     {
         private readonly IAccountServices _accountS;
         private readonly IGamesServices _gamesS;
-        public GamesController(IAccountServices accountServices, IGamesServices gamesS)
+        private readonly ITournamentsServices _tournamentsS;
+        public GamesController(IAccountServices accountServices, IGamesServices gamesS, ITournamentsServices tournamentsS)
         {
             _accountS = accountServices;
             _gamesS = gamesS;
+            _tournamentsS = tournamentsS;
         }
         public IActionResult ViewGamesPlayer(int id)
         {
@@ -32,8 +34,8 @@ namespace SystemSzwajcarski.Controllers
                 return RedirectToAction("Index", "Home");
             }
             Player player = _accountS.GetPlayer(token);
-            TournamentResult gameResults = _gamesS.GameResultsPlayer(player, id);
-            return View(gameResults);
+            RoundResult roundResults = _gamesS.GameResultsPlayer(player, id);
+            return View(roundResults);
         }
         public IActionResult ViewGamesOrganizer(int id)
         {
@@ -46,12 +48,12 @@ namespace SystemSzwajcarski.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            TournamentResult gameResults = _gamesS.GameResultsOrganizer( id);
-            return View(gameResults);
+            RoundResult roundResults = _gamesS.GameResultsOrganizer( id);
+            return View(roundResults);
         }
 
         [HttpPost]
-        public IActionResult ChangeResultOrganizer(TournamentResult tournamentResult, string Command)
+        public IActionResult ChangeResultOrganizer(RoundResult tournamentResult, string Command)
         {
             string token = HttpContext.Session.GetString("Token");
             if (!_accountS.ConfirmUser(token))
@@ -75,6 +77,10 @@ namespace SystemSzwajcarski.Controllers
                             {
                                 return View("ViewGamesPlayer", tournamentResult);
                             }
+                            if (tournament.MaxRound + 1 == tournament.CurrentRound)
+                            {
+                                return RedirectToAction("EndTournament", "Tournaments", new { id = tournament.idTournament });
+                            }
                         }
                     }
                 }
@@ -89,6 +95,20 @@ namespace SystemSzwajcarski.Controllers
                 }
             }
             return RedirectToAction("GetMyTournaments", "Tournaments");
+        }
+        public IActionResult ViewResultTournament(int id)
+        {
+            string token = HttpContext.Session.GetString("Token");
+            if (!_accountS.ConfirmUser(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            if (_accountS.UserRole(token) != "Organizator"&& _accountS.UserRole(token) != "Gracz")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            TournamentResult tournamentResult = _gamesS.GetTournamentResult(id);
+            return View(tournamentResult);
         }
 
     }

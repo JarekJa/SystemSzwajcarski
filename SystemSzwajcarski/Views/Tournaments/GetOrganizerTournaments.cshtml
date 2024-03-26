@@ -21,9 +21,15 @@
             <a href="@Url.Action("Viewdata", "Tournaments", new { Id = tournament.idTournament })">Modyfikuj</a>
             <a href="@Url.Action("StartTournament", "Tournaments", new { Id = tournament.idTournament })">Rozpocznij</a>
         }
-        @if((tournament.Status.ToString() == "trwający"))
+        @if ((tournament.Status.ToString() == "trwający"))
         {
-        <a href="@Url.Action("ViewGamesOrganizer", "Games", new { Id = tournament.idTournament })">Podgląd</a>
+            <a href="@Url.Action("ViewGamesOrganizer", "Games", new { Id = tournament.idTournament })">Mecze</a>
+            <a href="@Url.Action("EndTournament", "Tournaments", new { Id = tournament.idTournament })">Zakącz</a>
+        }
+        @if ((tournament.Status.ToString() == "zakończony"))
+        {
+            <a href="@Url.Action("ViewResultTournament", "Games", new { Id = tournament.idTournament })">Wyniki</a>
+            <a href="@Url.Action("DeleteTournament", "Tournaments", new { Id = tournament.idTournament })">Usuń</a>
         }
     </li>
     }

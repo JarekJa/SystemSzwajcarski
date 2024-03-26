@@ -21,9 +21,10 @@ namespace SystemSzwajcarski.Services.Interfaces
         public bool DeletePlayertoTournament(Organizer organizer, PlayerstoAdd playerstoAdd);
         public PlayerstoAdd GetPLayer(int id);
         public bool DeleteTournament(int id);
+        public bool StartTournament(int id);
         public Tournament GetTournament(int id);
         public bool ModifyTournament(TournamentAdd tournamentAdd);
         public bool QuitTournament(int id);
-        public bool StartTournament(int id);
+        public bool EndTournament(int id);
     }
 }
