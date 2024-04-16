@@ -33,7 +33,7 @@ namespace SystemSzwajcarski.Models.Main
             BlackPlayer = player1;
             BlackPlayerId = player1.idRelation;
             WhitePlayer = player2;
-            WhitePlayerId = player1.idRelation;
+            WhitePlayerId = player2.idRelation;
             Bye = false;
             Round = tournament.CurrentRound;
             Tournament = tournament;
